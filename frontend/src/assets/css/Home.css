@@ -1,0 +1,78 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.hero-section {
+    border-radius: 30px;
+    margin-bottom: 60px;
+    padding: 0;
+}
+
+.swiper-wrapper{
+    padding-top: 20px;
+}
+
+.mySwiper {
+    padding-bottom: 0;
+    position: static !important;
+}
+
+.swiper-pagination {
+    text-align: center;
+}
+
+.swiper-pagination-bullet {
+    background-color: #6366f1 !important;
+    opacity: 0.5 !important;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #6366f1 !important;
+    opacity: 1 !important;
+}
+
+.find-book-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .find-book-section {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .book-info {
+        margin-top: 20px;
+    }
+}
+
+.explore-btn {
+    background-color: #6366F1 !important;
+    border: none;
+}
+
+.explore-btn:hover {
+    background-color: #1E1B4B !important;
+}
+
+.award-section {
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .award-section {
+        flex-direction: column;
+        text-align: center;
+        height: auto !important;
+        padding: 40px 20px;
+    }
+
+    .award-section img {
+        margin-top: 20px;
+        height: 200px !important;
+    }
+}
