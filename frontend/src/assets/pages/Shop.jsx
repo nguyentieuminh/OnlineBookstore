@@ -1,10 +1,10 @@
 // src/assets/pages/Shop.jsx
 import { useEffect, useMemo, useState } from "react";
 
-/* ==== Card nội bộ (inline styles, không phụ thuộc file khác) ==== */
+/* ==== Inline Card (no external CSS, self-contained) ==== */
 function Card({ book }) {
   const s = {
-    col: { display: "flex" }, // để card kéo đầy chiều cao cột
+    col: { display: "flex" }, // let the card stretch to full column height
     card: {
       display: "flex",
       flexDirection: "column",
@@ -17,7 +17,7 @@ function Card({ book }) {
       width: "100%",
     },
     imgWrap: {
-      /* tạo tỉ lệ cố định 3:4 cho vùng ảnh */
+      // fixed 3:4 aspect ratio
       width: "100%",
       position: "relative",
       paddingTop: "133.3333%", // 4/3 * 100
@@ -35,7 +35,7 @@ function Card({ book }) {
       display: "flex",
       flexDirection: "column",
       padding: "16px",
-      flexGrow: 1, // body chiếm phần còn lại
+      flexGrow: 1,
     },
     title: {
       fontSize: "1rem",
@@ -63,7 +63,7 @@ function Card({ book }) {
       WebkitLineClamp: 3,
       WebkitBoxOrient: "vertical",
       overflow: "hidden",
-      minHeight: "4.2em", // ~3 dòng để đều chiều cao
+      minHeight: "4.2em", // ~3 lines for even height
       lineHeight: 1.4,
     },
     price: { fontWeight: 700, marginBottom: 10, color: "#1e1b4b" },
@@ -92,10 +92,12 @@ function Card({ book }) {
           <div style={s.author}>{book.author}</div>
           <p style={s.desc}>{book.description}</p>
 
-          {/* Đẩy cụm giá + nút xuống đáy */}
+          {/* push price + button to bottom */}
           <div style={{ marginTop: "auto" }}>
-            <div style={s.price}>{Number(book.price).toLocaleString()} đô la</div>
-            <button style={s.btn}>🛒 Thêm vào giỏ hàng</button>
+            <div style={s.price}>
+              {Number(book.price).toLocaleString()} USD
+            </div>
+            <button style={s.btn}>🛒 Add to cart</button>
           </div>
         </div>
       </div>
@@ -122,7 +124,7 @@ export default function Shop() {
     (async () => {
       try {
         const res = await fetch("/books.json", { signal: ac.signal });
-        if (!res.ok) throw new Error("Không thể tải dữ liệu sách");
+        if (!res.ok) throw new Error("Failed to load book data");
         const data = await res.json();
 
         const cleaned = (Array.isArray(data) ? data : []).map((b, i) => ({
@@ -132,13 +134,13 @@ export default function Shop() {
           price: Number(b.price) || 0,
           description: String(b.description || ""),
           image: b.image || "/Book1.png",
-          category: String(b.category || "Khác").trim(),
+          category: String(b.category || "Other").trim(),
         }));
         setAllBooks(cleaned);
       } catch (err) {
         if (err.name !== "AbortError") {
           console.error(err);
-          setError(err.message || "Lỗi không xác định");
+          setError(err.message || "Unknown error");
         }
       } finally {
         setLoading(false);
@@ -150,12 +152,12 @@ export default function Shop() {
   // ====== Derived data ======
   const categories = useMemo(() => {
     const set = new Set(allBooks.map((b) => b.category));
-    const collator = new Intl.Collator("vi");
+    const collator = new Intl.Collator("en");
     return ["all", ...Array.from(set).sort(collator.compare)];
   }, [allBooks]);
 
   const filteredAndSorted = useMemo(() => {
-    const collator = new Intl.Collator("vi", { sensitivity: "base" });
+    const collator = new Intl.Collator("en", { sensitivity: "base" });
     let arr = allBooks;
 
     if (q.trim()) {
@@ -188,10 +190,10 @@ export default function Shop() {
     return filteredAndSorted.slice(start, start + pageSize);
   }, [filteredAndSorted, page]);
 
-  // đổi filter/search/sort -> về trang 1
+  // reset to page 1 when filters change
   useEffect(() => { setPage(1); }, [q, cat, sort]);
 
-  // kẹp trang khi tổng trang đổi (tránh vượt/tràn)
+  // clamp page when totalPages changes
   useEffect(() => {
     setPage((p) => Math.min(Math.max(1, p), Math.max(1, totalPages)));
   }, [totalPages]);
@@ -206,7 +208,7 @@ export default function Shop() {
     return (
       <div className="container py-5 text-center">
         <div className="spinner-border text-primary" role="status" />
-        <p className="mt-3">Đang tải sách…</p>
+        <p className="mt-3">Loading books…</p>
       </div>
     );
   }
@@ -214,7 +216,7 @@ export default function Shop() {
     return (
       <div className="container py-5">
         <div className="alert alert-danger" role="alert">
-          <h5 className="mb-2">Có lỗi xảy ra</h5>
+          <h5 className="mb-2">An error occurred</h5>
           <div>{error}</div>
         </div>
       </div>
@@ -223,14 +225,14 @@ export default function Shop() {
 
   return (
     <div className="container py-4">
-      <h1 className="mb-3">Cửa hàng</h1>
+      <h1 className="mb-3">Shop</h1>
 
       {/* Controls */}
       <div className="row g-3 align-items-stretch mb-2">
         <div className="col-12 col-md-5">
           <input
             className="form-control"
-            placeholder="Tìm kiếm theo tên…"
+            placeholder="Search by title…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -243,7 +245,7 @@ export default function Shop() {
           >
             {categories.map((c) => (
               <option key={c} value={c}>
-                {c === "all" ? "Tất cả thể loại" : c}
+                {c === "all" ? "All categories" : c}
               </option>
             ))}
           </select>
@@ -254,19 +256,19 @@ export default function Shop() {
             value={sort}
             onChange={(e) => setSort(e.target.value)}
           >
-            <option value="popular">Phổ biến</option>
-            <option value="price-asc">Giá tăng dần</option>
-            <option value="price-desc">Giá giảm dần</option>
-            <option value="name-asc">Tên A → Z</option>
+            <option value="popular">Most popular</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="name-asc">Title: A → Z</option>
           </select>
         </div>
       </div>
 
       <div className="text-muted mb-3">
-        Đã tìm thấy {filteredAndSorted.length} cuốn sách
+        Found {filteredAndSorted.length} books
       </div>
 
-      {/* Grid – mọi cột cao bằng nhau; card tự kéo đầy cột */}
+      {/* Grid – equal column height; card stretches to fill */}
       {pageData.length > 0 ? (
         <>
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 align-items-stretch mb-4">
@@ -283,7 +285,7 @@ export default function Shop() {
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
-              ‹ Trước
+              ‹ Prev
             </button>
 
             <div className="d-flex flex-wrap gap-2 mx-2">
@@ -299,7 +301,9 @@ export default function Shop() {
               ))}
             </div>
 
-            <span className="text-muted mx-1">Trang {page}/{totalPages}</span>
+            <span className="text-muted mx-1">
+              Page {page}/{totalPages}
+            </span>
 
             <button
               type="button"
@@ -307,14 +311,14 @@ export default function Shop() {
               disabled={page === totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             >
-              Sau ›
+              Next ›
             </button>
           </div>
         </>
       ) : (
         <div className="text-center py-5">
-          <p className="text-muted fs-5 mb-1">Không tìm thấy sách phù hợp</p>
-          <p className="text-muted mb-0">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+          <p className="text-muted fs-5 mb-1">No matching books found</p>
+          <p className="text-muted mb-0">Try adjusting filters or your search query</p>
         </div>
       )}
     </div>
