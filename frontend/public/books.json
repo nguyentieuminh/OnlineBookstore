@@ -1,0 +1,366 @@
+[
+  {
+    "id": "b001",
+    "title": "Cooking Made Easy",
+    "author": "Emily Clark",
+    "price": 9.99,
+    "description": "Simple and delicious recipes for everyday cooking.",
+    "image": "/Book1.png",
+    "category": "Ẩm thực"
+  },
+  {
+    "id": "b002",
+    "title": "Shadows of Doubt",
+    "author": "Emma Watson",
+    "price": 13.99,
+    "description": "A detective novel filled with twists and unexpected turns.",
+    "image": "/Book2.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b003",
+    "title": "Taste of Italy",
+    "author": "Gina Rossi",
+    "price": 15.75,
+    "description": "Authentic Italian recipes to bring the flavors of Italy home.",
+    "image": "/Book3.png",
+    "category": "Ẩm thực"
+  },
+  {
+    "id": "b004",
+    "title": "Echoes of the Past",
+    "author": "Michael Brown",
+    "price": 17.5,
+    "description": "A historical tale of secrets buried in time.",
+    "image": "/Book4.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b005",
+    "title": "Design Matters",
+    "author": "Anna Lee",
+    "price": 11.25,
+    "description": "A creative guide to modern design and innovation.",
+    "image": "/Book1.png",
+    "category": "Thiết kế"
+  },
+  {
+    "id": "b006",
+    "title": "Future Tech",
+    "author": "David King",
+    "price": 19.99,
+    "description": "Exploring the technologies that will shape our tomorrow.",
+    "image": "/Book2.png",
+    "category": "Công nghệ"
+  },
+  {
+    "id": "b007",
+    "title": "Mindful Living",
+    "author": "Sophia Green",
+    "price": 8.5,
+    "description": "Practical tips for a healthier and more mindful lifestyle.",
+    "image": "/Book3.png",
+    "category": "Tâm lý"
+  },
+  {
+    "id": "b008",
+    "title": "Space Beyond Stars",
+    "author": "Chris Nolan",
+    "price": 21.0,
+    "description": "A thrilling journey through the universe and beyond.",
+    "image": "/Book4.png",
+    "category": "Khoa học"
+  },
+
+  {
+    "id": "b009",
+    "title": "Startup 101",
+    "author": "John Carter",
+    "price": 18.0,
+    "description": "Essential guide for entrepreneurs starting their own business.",
+    "image": "/Book1.png",
+    "category": "Kinh tế"
+  },
+  {
+    "id": "b010",
+    "title": "Rich Dad Poor Dad",
+    "author": "Robert Kiyosaki",
+    "price": 14.5,
+    "description": "Classic book on financial literacy and mindset.",
+    "image": "/Book2.png",
+    "category": "Kinh tế"
+  },
+  {
+    "id": "b011",
+    "title": "The Lean Startup",
+    "author": "Eric Ries",
+    "price": 16.0,
+    "description": "A framework for building successful startups.",
+    "image": "/Book3.png",
+    "category": "Kinh tế"
+  },
+  {
+    "id": "b012",
+    "title": "AI for Everyone",
+    "author": "Andrew Ng",
+    "price": 20.0,
+    "description": "Introduction to artificial intelligence for all audiences.",
+    "image": "/Book4.png",
+    "category": "Công nghệ"
+  },
+  {
+    "id": "b013",
+    "title": "Web Development Basics",
+    "author": "Lisa Kim",
+    "price": 12.0,
+    "description": "Learn HTML, CSS, and JavaScript from scratch.",
+    "image": "/Book1.png",
+    "category": "Công nghệ"
+  },
+  {
+    "id": "b014",
+    "title": "Adventures of Tom",
+    "author": "Mark Twain",
+    "price": 9.5,
+    "description": "A children's classic filled with fun and adventure.",
+    "image": "/Book2.png",
+    "category": "Thiếu nhi"
+  },
+  {
+    "id": "b015",
+    "title": "Fairy Tales Collection",
+    "author": "Brothers Grimm",
+    "price": 11.0,
+    "description": "Collection of timeless fairy tales for children.",
+    "image": "/Book3.png",
+    "category": "Thiếu nhi"
+  },
+  {
+    "id": "b016",
+    "title": "Emotional Intelligence",
+    "author": "Daniel Goleman",
+    "price": 13.5,
+    "description": "How EQ matters more than IQ in success.",
+    "image": "/Book4.png",
+    "category": "Tâm lý"
+  },
+  {
+    "id": "b017",
+    "title": "Murder on the Train",
+    "author": "Agatha Christie",
+    "price": 17.5,
+    "description": "A detective story with mystery and suspense.",
+    "image": "/Book1.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b018",
+    "title": "Quantum Basics",
+    "author": "Neil Thomas",
+    "price": 19.0,
+    "description": "Introduction to quantum physics made simple.",
+    "image": "/Book2.png",
+    "category": "Khoa học"
+  },
+
+  {
+    "id": "b019",
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "price": 13.0,
+    "description": "A classic novel set in the Jazz Age of America.",
+    "image": "/Book3.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b020",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "price": 14.0,
+    "description": "One of the most loved romance novels of all time.",
+    "image": "/Book4.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b021",
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "price": 15.5,
+    "description": "A powerful novel about racial injustice and morality.",
+    "image": "/Book1.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b022",
+    "title": "The Art of War",
+    "author": "Sun Tzu",
+    "price": 11.5,
+    "description": "Ancient strategies that are still relevant today.",
+    "image": "/Book2.png",
+    "category": "Kinh tế"
+  },
+  {
+    "id": "b023",
+    "title": "Deep Work",
+    "author": "Cal Newport",
+    "price": 18.5,
+    "description": "Rules for focused success in a distracted world.",
+    "image": "/Book3.png",
+    "category": "Kỹ năng"
+  },
+  {
+    "id": "b024",
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "price": 16.5,
+    "description": "Tiny changes, remarkable results.",
+    "image": "/Book4.png",
+    "category": "Kỹ năng"
+  },
+  {
+    "id": "b025",
+    "title": "The Psychology of Money",
+    "author": "Morgan Housel",
+    "price": 17.0,
+    "description": "Timeless lessons on wealth, greed, and happiness.",
+    "image": "/Book1.png",
+    "category": "Kinh tế"
+  },
+
+  {
+    "id": "b026",
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "price": 22.0,
+    "description": "The first book in the beloved Harry Potter series.",
+    "image": "/Book2.png",
+    "category": "Thiếu nhi"
+  },
+  {
+    "id": "b027",
+    "title": "Harry Potter and the Chamber of Secrets",
+    "author": "J.K. Rowling",
+    "price": 23.0,
+    "description": "The second adventure of Harry Potter at Hogwarts.",
+    "image": "/Book3.png",
+    "category": "Thiếu nhi"
+  },
+  {
+    "id": "b028",
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "price": 20.0,
+    "description": "The prelude to the Lord of the Rings trilogy.",
+    "image": "/Book4.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b029",
+    "title": "The Lord of the Rings",
+    "author": "J.R.R. Tolkien",
+    "price": 30.0,
+    "description": "Epic fantasy trilogy about the battle for Middle-earth.",
+    "image": "/Book1.png",
+    "category": "Văn học"
+  },
+  {
+    "id": "b030",
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "price": 25.0,
+    "description": "A science fiction masterpiece set on the desert planet Arrakis.",
+    "image": "/Book2.png",
+    "category": "Khoa học"
+  },
+
+  {
+    "id": "b031",
+    "title": "Sherlock Holmes: A Study in Scarlet",
+    "author": "Arthur Conan Doyle",
+    "price": 12.0,
+    "description": "The first Sherlock Holmes mystery.",
+    "image": "/Book3.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b032",
+    "title": "Sherlock Holmes: The Hound of the Baskervilles",
+    "author": "Arthur Conan Doyle",
+    "price": 14.0,
+    "description": "A chilling Holmes mystery set in Dartmoor.",
+    "image": "/Book4.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b033",
+    "title": "The Silent Patient",
+    "author": "Alex Michaelides",
+    "price": 19.0,
+    "description": "A gripping psychological thriller.",
+    "image": "/Book1.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b034",
+    "title": "Gone Girl",
+    "author": "Gillian Flynn",
+    "price": 17.0,
+    "description": "A modern classic thriller full of twists.",
+    "image": "/Book2.png",
+    "category": "Trinh thám"
+  },
+  {
+    "id": "b035",
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "price": 18.0,
+    "description": "A Nobel laureate explains the two systems that drive the mind.",
+    "image": "/Book3.png",
+    "category": "Tâm lý"
+  },
+  {
+    "id": "b036",
+    "title": "Man's Search for Meaning",
+    "author": "Viktor Frankl",
+    "price": 15.0,
+    "description": "One of the most influential books about finding meaning in life.",
+    "image": "/Book4.png",
+    "category": "Tâm lý"
+  },
+  {
+    "id": "b037",
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "price": 22.0,
+    "description": "The story of how humans became the dominant species.",
+    "image": "/Book1.png",
+    "category": "Khoa học"
+  },
+  {
+    "id": "b038",
+    "title": "Homo Deus",
+    "author": "Yuval Noah Harari",
+    "price": 24.0,
+    "description": "A look into the possible futures of humanity.",
+    "image": "/Book2.png",
+    "category": "Khoa học"
+  },
+  {
+    "id": "b039",
+    "title": "21 Lessons for the 21st Century",
+    "author": "Yuval Noah Harari",
+    "price": 20.0,
+    "description": "Essays on the challenges of the modern world.",
+    "image": "/Book3.png",
+    "category": "Khoa học"
+  },
+  {
+    "id": "b040",
+    "title": "The Design of Everyday Things",
+    "author": "Don Norman",
+    "price": 19.0,
+    "description": "How design shapes the way we interact with the world.",
+    "image": "/Book4.png",
+    "category": "Thiết kế"
+  }
+]
