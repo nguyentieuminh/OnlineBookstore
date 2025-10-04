@@ -1,61 +1,77 @@
 import { useEffect, useRef, useMemo, useState } from "react";
-import booksRaw from "../data/books.json";
 import BookCard from "../components/BookCard.jsx";
 
 export default function Shop({
-    addToCart,
-    removeFromCart,
-    cartItems,
-    favourites,
-    addToFavourites,
-    removeFromFavourites
+  addToCart,
+  removeFromCart,
+  cartItems,
+  favourites,
+  addToFavourites,
+  removeFromFavourites
 }) {
-
   const swiperRefs = useRef({});
+  const [books, setBooks] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchAuthor, setSearchAuthor] = useState("");
   const [searchPublisher, setSearchPublisher] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const allBooks = useMemo(() => {
-    return (Array.isArray(booksRaw) ? booksRaw : []).map((b, i) => ({
-      id: b.id ?? `b${String(i + 1).padStart(3, "0")}`,
-      title: String(b.title || "").trim(),
-      author: String(b.author || "").trim(),
-      publisher: String(b.publisher || "").trim(),
-      price: Number(b.price) || 0,
-      description: String(b.description || ""),
-      image: b.image || "/Book1.png",
-      category: Array.isArray(b.category) ? b.category : [b.category || "Other"],
-      tags: Array.isArray(b.tags) ? b.tags : [],
-    }));
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/books");
+        if (!res.ok) throw new Error("Failed to fetch books");
+        const result = await res.json();
+
+        if (result.status && Array.isArray(result.data)) {
+          const formatted = result.data.map((book) => ({
+            id: book.BookID,
+            title: book.BookTitle,
+            author: book.Author,
+            publisher: book.publisher?.PublisherName || "Unknown",
+            price: book.Price,
+            description: book.Describe,
+            year: book.YearOfPublication,
+            quantity: book.Quantity,
+            tags: book.tags?.map(t => t.TagName) || [],
+            categories: book.categories?.map(c => c.CategoryName) || [],
+            image: book.image
+              ? book.image.startsWith("http://localhost:8000/")
+                ? book.image.replace("http://localhost:8000", "")
+                : book.image
+              : "/default-book.jpg",
+          }));
+          setBooks(formatted);
+        }
+      } catch (err) {
+        console.error("Error loading books:", err);
+      }
+    };
+
+    fetchBooks();
   }, []);
 
   const categoryList = useMemo(() => {
     const setCat = new Set();
-    allBooks.forEach((b) => b.category.forEach((c) => setCat.add(c)));
+    books.forEach((b) => b.categories.forEach((c) => setCat.add(c)));
     return Array.from(setCat).sort(new Intl.Collator("en").compare);
-  }, [allBooks]);
+  }, [books]);
 
   const filteredBooks = useMemo(() => {
-    const makeRegex = (str) =>
-      new RegExp(`\\b${str}`, "i");
-
+    const makeRegex = (str) => new RegExp(`\\b${str}`, "i");
     const titleRegex = searchTitle ? makeRegex(searchTitle) : null;
     const authorRegex = searchAuthor ? makeRegex(searchAuthor) : null;
     const publisherRegex = searchPublisher ? makeRegex(searchPublisher) : null;
 
-    return allBooks.filter((book) => {
+    return books.filter((book) => {
       const matchTitle = !titleRegex || titleRegex.test(book.title);
       const matchAuthor = !authorRegex || authorRegex.test(book.author);
       const matchPublisher = !publisherRegex || publisherRegex.test(book.publisher);
       const matchCategory =
-        !selectedCategory || book.category.includes(selectedCategory);
-
+        !selectedCategory || book.categories.includes(selectedCategory);
       return matchTitle && matchAuthor && matchPublisher && matchCategory;
     });
-  }, [allBooks, searchTitle, searchAuthor, searchPublisher, selectedCategory]);
-
+  }, [books, searchTitle, searchAuthor, searchPublisher, selectedCategory]);
 
   const groupedByTag = useMemo(() => {
     const map = {};
@@ -120,7 +136,7 @@ export default function Shop({
 
   return (
     <div className="container py-4">
-      <h2 className="mb-5 fw-semibold">Categories</h2>
+      <h2 className="mb-5 fw-semibold">Shop Books</h2>
 
       <div className="row mb-5">
         <div className="col-md-3 mb-2">
