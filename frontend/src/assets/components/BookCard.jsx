@@ -10,7 +10,7 @@ const colors = [
     "#8B5CF6",
 ];
 
-const BookCard = ({ title, author, price, description, image, category }) => {
+const BookCard = ({ title, author, publisher, price, description, image, category }) => {
     return (
         <div
             className="card border-0 shadow-sm text-decoration-none p-2 mb-4 book-card"
@@ -27,7 +27,17 @@ const BookCard = ({ title, author, price, description, image, category }) => {
 
             <div className="card-body d-flex flex-column text-start">
                 <h5 className="fw-semibold text-black mb-2">{title}</h5>
-                <p className="text-primary small mb-2">{author}</p>
+
+                {/* Author + Publisher */}
+                <p className="small mb-2">
+                    <span className="fw-semibold text-primary">{author}</span>
+                    {publisher && (
+                        <>
+                            <span className="mx-1 text-muted">•</span>
+                            <span className="text-muted">{publisher}</span>
+                        </>
+                    )}
+                </p>
 
                 {category && (
                     <div className="d-flex flex-wrap gap-2 mb-2">
