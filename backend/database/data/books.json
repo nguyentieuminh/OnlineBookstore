@@ -1,6 +1,6 @@
 [
   {
-    "id": "b001",
+    "id": "1",
     "title": "Cooking Made Easy",
     "author": "Emily Clark",
     "price": 9.99,
@@ -11,7 +11,7 @@
     "publisher": "Flavor Press"
   },
   {
-    "id": "b002",
+    "id": "2",
     "title": "Shadows of Doubt",
     "author": "Emma Watson",
     "price": 13.99,
@@ -22,7 +22,7 @@
     "publisher": "Midnight Reads"
   },
   {
-    "id": "b003",
+    "id": "3",
     "title": "Taste of Italy",
     "author": "Gina Rossi",
     "price": 15.75,
@@ -33,7 +33,7 @@
     "publisher": "Culinary Classics"
   },
   {
-    "id": "b004",
+    "id": "4",
     "title": "Echoes of the Past",
     "author": "Michael Brown",
     "price": 17.5,
@@ -44,7 +44,7 @@
     "publisher": "Chronicle House"
   },
   {
-    "id": "b005",
+    "id": "5",
     "title": "Design Matters",
     "author": "Anna Lee",
     "price": 11.25,
@@ -55,7 +55,7 @@
     "publisher": "Visual Arts Inc."
   },
   {
-    "id": "b006",
+    "id": "6",
     "title": "Future Tech",
     "author": "David King",
     "price": 19.99,
@@ -66,7 +66,7 @@
     "publisher": "Innovate Books"
   },
   {
-    "id": "b007",
+    "id": "7",
     "title": "Mindful Living",
     "author": "Sophia Green",
     "price": 8.5,
@@ -77,7 +77,7 @@
     "publisher": "Wellness Publishing"
   },
   {
-    "id": "b008",
+    "id": "8",
     "title": "Space Beyond Stars",
     "author": "Chris Nolan",
     "price": 21.0,
@@ -88,7 +88,7 @@
     "publisher": "Cosmos Press"
   },
   {
-    "id": "b009",
+    "id": "9",
     "title": "Startup 101",
     "author": "John Carter",
     "price": 18.0,
@@ -99,7 +99,7 @@
     "publisher": "Venture Publications"
   },
   {
-    "id": "b010",
+    "id": "10",
     "title": "Rich Dad Poor Dad",
     "author": "Robert Kiyosaki",
     "price": 14.5,
@@ -110,7 +110,7 @@
     "publisher": "Financial Wisdom"
   },
   {
-    "id": "b011",
+    "id": "11",
     "title": "The Lean Startup",
     "author": "Eric Ries",
     "price": 16.0,
@@ -121,7 +121,7 @@
     "publisher": "Business Model Press"
   },
   {
-    "id": "b012",
+    "id": "12",
     "title": "AI for Everyone",
     "author": "Andrew Ng",
     "price": 20.0,
@@ -132,7 +132,7 @@
     "publisher": "Tech Insight"
   },
   {
-    "id": "b013",
+    "id": "13",
     "title": "Web Development Basics",
     "author": "Lisa Kim",
     "price": 12.0,
@@ -143,7 +143,7 @@
     "publisher": "Code Academy"
   },
   {
-    "id": "b014",
+    "id": "14",
     "title": "Adventures of Tom",
     "author": "Mark Twain",
     "price": 9.5,
@@ -154,7 +154,7 @@
     "publisher": "Classic Tales Co."
   },
   {
-    "id": "b015",
+    "id": "15",
     "title": "Fairy Tales Collection",
     "author": "Brothers Grimm",
     "price": 11.0,
@@ -165,7 +165,7 @@
     "publisher": "Enchanted Books"
   },
   {
-    "id": "b016",
+    "id": "16",
     "title": "Emotional Intelligence",
     "author": "Daniel Goleman",
     "price": 13.5,
@@ -176,7 +176,7 @@
     "publisher": "Mindset Media"
   },
   {
-    "id": "b017",
+    "id": "17",
     "title": "Murder on the Train",
     "author": "Agatha Christie",
     "price": 17.5,
@@ -187,7 +187,7 @@
     "publisher": "Whodunit Publishing"
   },
   {
-    "id": "b018",
+    "id": "18",
     "title": "Quantum Basics",
     "author": "Neil Thomas",
     "price": 19.0,
@@ -198,7 +198,7 @@
     "publisher": "Academic Insight"
   },
   {
-    "id": "b019",
+    "id": "19",
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
     "price": 13.0,
@@ -209,7 +209,7 @@
     "publisher": "Classic Literature"
   },
   {
-    "id": "b020",
+    "id": "20",
     "title": "Pride and Prejudice",
     "author": "Jane Austen",
     "price": 14.0,
@@ -220,7 +220,7 @@
     "publisher": "Regency Publishing"
   },
   {
-    "id": "b021",
+    "id": "21",
     "title": "To Kill a Mockingbird",
     "author": "Harper Lee",
     "price": 15.5,
@@ -231,7 +231,7 @@
     "publisher": "Heritage Books"
   },
   {
-    "id": "b022",
+    "id": "22",
     "title": "The Art of War",
     "author": "Sun Tzu",
     "price": 11.5,
@@ -242,7 +242,7 @@
     "publisher": "Military Wisdom"
   },
   {
-    "id": "b023",
+    "id": "23",
     "title": "Deep Work",
     "author": "Cal Newport",
     "price": 18.5,
@@ -253,7 +253,7 @@
     "publisher": "Productivity Hub"
   },
   {
-    "id": "b024",
+    "id": "24",
     "title": "Atomic Habits",
     "author": "James Clear",
     "price": 16.5,
@@ -264,7 +264,7 @@
     "publisher": "Habit Forge"
   },
   {
-    "id": "b025",
+    "id": "25",
     "title": "The Psychology of Money",
     "author": "Morgan Housel",
     "price": 17.0,
@@ -275,7 +275,7 @@
     "publisher": "Financial Wisdom"
   },
   {
-    "id": "b026",
+    "id": "26",
     "title": "Harry Potter and the Sorcerer's Stone",
     "author": "J.K. Rowling",
     "price": 22.0,
@@ -286,7 +286,7 @@
     "publisher": "Wizarding World Books"
   },
   {
-    "id": "b027",
+    "id": "27",
     "title": "Harry Potter and the Chamber of Secrets",
     "author": "J.K. Rowling",
     "price": 23.0,
@@ -297,7 +297,7 @@
     "publisher": "Wizarding World Books"
   },
   {
-    "id": "b028",
+    "id": "28",
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
     "price": 20.0,
@@ -308,7 +308,7 @@
     "publisher": "Middle-earth Press"
   },
   {
-    "id": "b029",
+    "id": "29",
     "title": "The Lord of the Rings",
     "author": "J.R.R. Tolkien",
     "price": 30.0,
@@ -319,7 +319,7 @@
     "publisher": "Middle-earth Press"
   },
   {
-    "id": "b030",
+    "id": "30",
     "title": "Dune",
     "author": "Frank Herbert",
     "price": 25.0,
@@ -330,7 +330,7 @@
     "publisher": "Sci-Fi Universe"
   },
   {
-    "id": "b031",
+    "id": "31",
     "title": "Sherlock Holmes: A Study in Scarlet",
     "author": "Arthur Conan Doyle",
     "price": 12.0,
@@ -341,7 +341,7 @@
     "publisher": "Classic Mystery"
   },
   {
-    "id": "b032",
+    "id": "32",
     "title": "Sherlock Holmes: The Hound of the Baskervilles",
     "author": "Arthur Conan Doyle",
     "price": 14.0,
@@ -352,7 +352,7 @@
     "publisher": "Classic Mystery"
   },
   {
-    "id": "b033",
+    "id": "33",
     "title": "The Silent Patient",
     "author": "Alex Michaelides",
     "price": 19.0,
@@ -363,7 +363,7 @@
     "publisher": "Modern Thrills"
   },
   {
-    "id": "b034",
+    "id": "34",
     "title": "Gone Girl",
     "author": "Gillian Flynn",
     "price": 17.0,
@@ -374,7 +374,7 @@
     "publisher": "Modern Thrills"
   },
   {
-    "id": "b035",
+    "id": "35",
     "title": "Thinking, Fast and Slow",
     "author": "Daniel Kahneman",
     "price": 18.0,
@@ -385,7 +385,7 @@
     "publisher": "Behavioral Science"
   },
   {
-    "id": "b036",
+    "id": "36",
     "title": "Man's Search for Meaning",
     "author": "Viktor Frankl",
     "price": 15.0,
@@ -396,7 +396,7 @@
     "publisher": "Meaningful Lives"
   },
   {
-    "id": "b037",
+    "id": "37",
     "title": "Sapiens: A Brief History of Humankind",
     "author": "Yuval Noah Harari",
     "price": 22.0,
@@ -407,7 +407,7 @@
     "publisher": "Global History"
   },
   {
-    "id": "b038",
+    "id": "38",
     "title": "Homo Deus",
     "author": "Yuval Noah Harari",
     "price": 24.0,
@@ -418,7 +418,7 @@
     "publisher": "Global History"
   },
   {
-    "id": "b039",
+    "id": "39",
     "title": "21 Lessons for the 21st Century",
     "author": "Yuval Noah Harari",
     "price": 20.0,
@@ -429,7 +429,7 @@
     "publisher": "Global History"
   },
   {
-    "id": "b040",
+    "id": "40",
     "title": "The Design of Everyday Things",
     "author": "Don Norman",
     "price": 19.0,

@@ -9,6 +9,7 @@ import Shop from './assets/pages/Shop.jsx';
 import Cart from './assets/pages/Cart.jsx';
 import Login from "./assets/pages/Login.jsx";
 import SignUp from "./assets/pages/SignUp.jsx";
+import BookDetail from "./assets/pages/BookDetail.jsx";
 import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
 
 function App() {
@@ -94,6 +95,20 @@ function App() {
           path="/shop"
           element={
             <Shop
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+              cartItems={cartItems}
+              favourites={favourites}
+              addToFavourites={addToFavourites}
+              removeFromFavourites={removeFromFavourites}
+            />
+          }
+        />
+
+        <Route
+          path="/book/:id"
+          element={
+            <BookDetail
               addToCart={addToCart}
               removeFromCart={removeFromCart}
               cartItems={cartItems}
