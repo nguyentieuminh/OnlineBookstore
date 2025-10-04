@@ -97,23 +97,10 @@ export default function Home({
                             Goodreads.
                         </p>
 
-                        <div className="mt-4">
-                            <div
-                                className="input-group shadow-sm"
-                                style={{ maxWidth: "350px" }}
-                            >
-                                <span className="input-group-text bg-white border-0">
-                                    <i className="bi bi-search text-muted"></i>
-                                </span>
-                                <input
-                                    type="text"
-                                    className="form-control border-0"
-                                    placeholder="Search for Books..."
-                                />
-                                <button className="btn btn-light border-0">
-                                    <i className="bi bi-three-dots"></i>
-                                </button>
-                            </div>
+                        <div className="btn px-4 py-2 rounded-2 explore-btn mt-3" style={{ width: "fit-content" }}>
+                            <Link to="/shop" style={{ textDecoration: 'none', color: '#fff' }}>
+                                Go to Shop
+                            </Link>
                         </div>
                     </div>
 
