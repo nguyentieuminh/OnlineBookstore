@@ -9,6 +9,7 @@ import Shop from './assets/pages/Shop.jsx';
 import Cart from './assets/pages/Cart.jsx';
 import Login from "./assets/pages/Login.jsx";
 import SignUp from "./assets/pages/SignUp.jsx";
+import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -118,6 +119,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
+        <Route path="/adminmanagebooks" element={<AdminManageBooks />} />
       </Routes>
 
       <Footer />

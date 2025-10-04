@@ -16,13 +16,11 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setEmailError('');
         setPasswordError('');
         setError('');
 
         let hasError = false;
-
         if (!email.trim()) {
             setEmailError('Please enter your email');
             hasError = true;
@@ -49,7 +47,7 @@ function Login() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({ email, password }),
             });
@@ -57,28 +55,25 @@ function Login() {
             const data = await response.json();
 
             if (response.ok) {
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('role', data.user.role);
-                    localStorage.setItem('userName', data.user.name);
-                }
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.user.Role);
+                localStorage.setItem('userName', data.user.Name);
 
-                if (data.user.role === 'admin') {
+                if (data.user.Role === 'admin') {
                     navigate('/admin/dashboard');
-
+                } else {
+                    navigate('/');
                 }
 
                 setShowSuccess(true);
-
             } else {
                 setShowFailed(true);
             }
         } catch (error) {
-            setError("Connection error to server.");
-            console.error("Login error:", error);
+            setError('Connection error to server.');
+            console.error('Login error:', error);
         }
     };
-
 
     return (
         <div className="login-container container">

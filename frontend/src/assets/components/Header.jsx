@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UserAva from '../images/Header/UserAvatar.png';
 
 export default function Header({ cartItems = [] }) {
     const totalItems = cartItems.length;
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
+
+    const userName = localStorage.getItem('userName');
+    const userRole = localStorage.getItem('role');
+    const isLoggedIn = !!userName;
+    const isAdmin = isLoggedIn && userRole === 'admin';
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -13,11 +19,17 @@ export default function Header({ cartItems = [] }) {
                 setDropdownOpen(false);
             }
         }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userName');
+        setDropdownOpen(false);
+        navigate('/login');
+    };
 
     return (
         <header
@@ -27,14 +39,13 @@ export default function Header({ cartItems = [] }) {
                 height: '80px',
                 position: 'sticky',
                 top: 0,
-                zIndex: 1000
+                zIndex: 1000,
             }}
         >
             <div
                 className="d-flex align-items-center justify-content-between container"
                 style={{ height: '100%' }}
             >
-
                 <Link
                     to="/"
                     className="fw-bold"
@@ -43,7 +54,7 @@ export default function Header({ cartItems = [] }) {
                         color: '#2c3e50',
                         textDecoration: 'none',
                         fontFamily: 'Georgia, serif',
-                        letterSpacing: '1px'
+                        letterSpacing: '1px',
                     }}
                 >
                     <span style={{ color: '#6366F1' }}>Online</span>
@@ -56,7 +67,7 @@ export default function Header({ cartItems = [] }) {
                         { to: '/shop', label: 'Shop' },
                         { to: '/favourite', label: 'Favourite' },
                         { to: '/contact', label: 'Contact' },
-                        { to: '/about', label: 'About us' }
+                        { to: '/about', label: 'About us' },
                     ].map((item, idx) => (
                         <Link
                             key={idx}
@@ -66,11 +77,10 @@ export default function Header({ cartItems = [] }) {
                                 color: '#1E1B4B',
                                 textDecoration: 'none',
                                 fontWeight: '500',
-                                position: 'relative',
-                                transition: 'color 0.3s'
+                                transition: 'color 0.3s',
                             }}
-                            onMouseEnter={(e) => e.target.style.color = '#6366F1'}
-                            onMouseLeave={(e) => e.target.style.color = '#1E1B4B'}
+                            onMouseEnter={(e) => (e.target.style.color = '#6366F1')}
+                            onMouseLeave={(e) => (e.target.style.color = '#1E1B4B')}
                         >
                             {item.label}
                         </Link>
@@ -91,7 +101,7 @@ export default function Header({ cartItems = [] }) {
                                     borderRadius: '50%',
                                     padding: '2px 6px',
                                     fontSize: '8px',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
                                 }}
                             >
                                 {totalItems}
@@ -111,79 +121,90 @@ export default function Header({ cartItems = [] }) {
                                 width: '34px',
                                 height: '34px',
                                 objectFit: 'cover',
-                                borderRadius: '50%'
+                                borderRadius: '50%',
                             }}
                         />
-                        <span style={{ color: '#1E1B4B', fontWeight: '500' }}>Guest</span>
+                        <span style={{ color: '#1E1B4B', fontWeight: '500' }}>
+                            {isLoggedIn ? userName : 'Guest'}
+                        </span>
 
-                        <div
-                            style={{
-                                position: 'absolute',
-                                top: '50px',
-                                right: 0,
-                                backgroundColor: '#fff',
-                                boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
-                                borderRadius: '8px',
-                                minWidth: '160px',
-                                opacity: dropdownOpen ? 1 : 0,
-                                transform: dropdownOpen ? 'translateY(0)' : 'translateY(-10px)',
-                                pointerEvents: dropdownOpen ? 'auto' : 'none',
-                                transition: 'all 0.25s ease',
-                                zIndex: 2000
-                            }}
-                        >
+                        {dropdownOpen && (
                             <div
                                 style={{
                                     position: 'absolute',
-                                    top: '-6px',
-                                    right: '12px',
-                                    width: '12px',
-                                    height: '12px',
+                                    top: '50px',
+                                    right: 0,
                                     backgroundColor: '#fff',
-                                    transform: 'rotate(45deg)',
-                                    boxShadow: '-2px -2px 5px rgba(0,0,0,0.05)'
+                                    boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+                                    borderRadius: '8px',
+                                    minWidth: '160px',
+                                    zIndex: 2000,
                                 }}
-                            ></div>
-
-                            <Link
-                                to="/orders"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    padding: '12px 16px',
-                                    textDecoration: 'none',
-                                    color: '#1E1B4B',
-                                    fontWeight: '500',
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.target.style.background = '#f9fafb'}
-                                onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                                onClick={() => setDropdownOpen(false)}
                             >
-                                <i className="bi bi-bag"></i> Orders
-                            </Link>
+                                {isLoggedIn && (
+                                    <Link
+                                        to="/orders"
+                                        style={{
+                                            display: 'block',
+                                            padding: '10px 16px',
+                                            color: '#1E1B4B',
+                                            textDecoration: 'none',
+                                        }}
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        <i className="bi bi-bag"></i> Orders
+                                    </Link>
+                                )}
 
-                            <Link
-                                to="/login"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    padding: '12px 16px',
-                                    textDecoration: 'none',
-                                    color: '#1E1B4B',
-                                    fontWeight: '500',
-                                    transition: 'background 0.2s',
-                                    borderTop: '1px solid #f0f0f0'
-                                }}
-                                onMouseEnter={(e) => e.target.style.background = '#f9fafb'}
-                                onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                                onClick={() => setDropdownOpen(false)}
-                            >
-                                <i className="bi bi-box-arrow-in-right"></i> Login
-                            </Link>
-                        </div>
+                                {isAdmin && (
+                                    <Link
+                                        to="/admin/dashboard"
+                                        style={{
+                                            display: 'block',
+                                            padding: '10px 16px',
+                                            color: '#1E1B4B',
+                                            textDecoration: 'none',
+                                        }}
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        <i className="bi bi-speedometer2"></i> Dashboard
+                                    </Link>
+                                )}
+
+                                {!isLoggedIn ? (
+                                    <Link
+                                        to="/login"
+                                        style={{
+                                            display: 'block',
+                                            padding: '10px 16px',
+                                            borderTop: '1px solid #eee',
+                                            color: '#1E1B4B',
+                                            textDecoration: 'none',
+                                        }}
+                                        onClick={() => setDropdownOpen(false)}
+                                    >
+                                        <i className="bi bi-box-arrow-in-right"></i> Login
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={handleLogout}
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            textAlign: 'left',
+                                            padding: '10px 16px',
+                                            borderTop: '1px solid #eee',
+                                            color: 'red',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <i className="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
