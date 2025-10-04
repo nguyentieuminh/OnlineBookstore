@@ -141,7 +141,7 @@ export default function Header({ cartItems = [] }) {
                                     zIndex: 2000,
                                 }}
                             >
-                                {isLoggedIn && (
+                                {isLoggedIn && !isAdmin && (
                                     <Link
                                         to="/orders"
                                         style={{
@@ -149,25 +149,13 @@ export default function Header({ cartItems = [] }) {
                                             padding: '10px 16px',
                                             color: '#1E1B4B',
                                             textDecoration: 'none',
+                                            transition: 'background-color 0.2s',
                                         }}
+                                        onMouseEnter={(e) => (e.target.style.backgroundColor = '#f5f5f5')}
+                                        onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                                         onClick={() => setDropdownOpen(false)}
                                     >
                                         <i className="bi bi-bag"></i> Orders
-                                    </Link>
-                                )}
-
-                                {isAdmin && (
-                                    <Link
-                                        to="/admin/dashboard"
-                                        style={{
-                                            display: 'block',
-                                            padding: '10px 16px',
-                                            color: '#1E1B4B',
-                                            textDecoration: 'none',
-                                        }}
-                                        onClick={() => setDropdownOpen(false)}
-                                    >
-                                        <i className="bi bi-speedometer2"></i> Dashboard
                                     </Link>
                                 )}
 
@@ -180,7 +168,10 @@ export default function Header({ cartItems = [] }) {
                                             borderTop: '1px solid #eee',
                                             color: '#1E1B4B',
                                             textDecoration: 'none',
+                                            transition: 'background-color 0.2s',
                                         }}
+                                        onMouseEnter={(e) => (e.target.style.backgroundColor = '#f5f5f5')}
+                                        onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                                         onClick={() => setDropdownOpen(false)}
                                     >
                                         <i className="bi bi-box-arrow-in-right"></i> Login
@@ -198,7 +189,10 @@ export default function Header({ cartItems = [] }) {
                                             borderTop: '1px solid #eee',
                                             color: 'red',
                                             cursor: 'pointer',
+                                            transition: 'background-color 0.2s',
                                         }}
+                                        onMouseEnter={(e) => (e.target.style.backgroundColor = '#f5f5f5')}
+                                        onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                                     >
                                         <i className="bi bi-box-arrow-right"></i> Logout
                                     </button>
