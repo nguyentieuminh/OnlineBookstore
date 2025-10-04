@@ -7,6 +7,8 @@ import NotFound from "./assets/pages/NotFound.jsx";
 import Home from './assets/pages/Home.jsx';
 import Shop from './assets/pages/Shop.jsx';
 import Cart from './assets/pages/Cart.jsx';
+import Login from "./assets/pages/Login.jsx";
+import SignUp from "./assets/pages/SignUp.jsx";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -112,6 +114,10 @@ function App() {
           }
         />
         <Route path="*" element={<NotFound />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
       </Routes>
 
       <Footer />
