@@ -3,22 +3,13 @@ import { Link } from 'react-router-dom';
 
 import "../css/Home.css";
 import BookCard from "../components/BookCard.jsx";
+import books from "../data/books.json";
 
 import Books1 from "../images/Home/Books1.jpg";
 import Books2 from "../images/Home/Books2.png";
 import Award from "../images/Home/Award.png";
 
 export default function Home() {
-    const books = [
-        { title: "Cooking Made Easy", author: "Emily Clark", price: "9.99", description: "Simple and delicious recipes for everyday cooking.", image: "/Book1.png" },
-        { title: "Shadows of Doubt", author: "Emma Watson", price: "13.99", description: "A detective novel filled with twists and unexpected turns.", image: "/Book2.png" },
-        { title: "Taste of Italy", author: "Gina Rossi", price: "15.75", description: "Authentic Italian recipes to bring the flavors of Italy home.", image: "/Book3.png" },
-        { title: "Echoes of the Past", author: "Michael Brown", price: "17.50", description: "A historical tale of secrets buried in time.", image: "/Book4.png" },
-        { title: "Design Matters", author: "Anna Lee", price: "11.25", description: "A creative guide to modern design and innovation.", image: "/Book1.png" },
-        { title: "Future Tech", author: "David King", price: "19.99", description: "Exploring the technologies that will shape our tomorrow.", image: "/Book2.png" },
-        { title: "Mindful Living", author: "Sophia Green", price: "8.50", description: "Practical tips for a healthier and more mindful lifestyle.", image: "/Book3.png" },
-        { title: "Space Beyond Stars", author: "Chris Nolan", price: "21.00", description: "A thrilling journey through the universe and beyond.", image: "/Book4.png" }
-    ];
 
     const swiperBestRef = useRef(null);
     const swiperNewRef = useRef(null);
@@ -137,12 +128,14 @@ export default function Home() {
             <section className="container text-center mt-5">
                 <h2 className="fw-semibold mb-4">Best Seller Books</h2>
                 <div className="swiper bestSellerSwiper">
-                    <div className="swiper-wrapper" >
-                        {books.map((book, idx) => (
-                            <div className="swiper-slide" key={idx}>
-                                <BookCard {...book} />
-                            </div>
-                        ))}
+                    <div className="swiper-wrapper">
+                        {books
+                            .filter((book) => book.tags?.includes("Best Seller"))
+                            .map((book) => (
+                                <div className="swiper-slide" key={book.id}>
+                                    <BookCard {...book} />
+                                </div>
+                            ))}
                     </div>
                     <div className="bestSeller-pagination"></div>
                 </div>
@@ -225,11 +218,13 @@ export default function Home() {
                 <h2 className="fw-semibold mb-4">New Releases</h2>
                 <div className="swiper newReleaseSwiper">
                     <div className="swiper-wrapper">
-                        {books.map((book, idx) => (
-                            <div className="swiper-slide" key={idx}>
-                                <BookCard {...book} />
-                            </div>
-                        ))}
+                        {books
+                            .filter((book) => book.tags?.includes("New Releases"))
+                            .map((book) => (
+                                <div className="swiper-slide" key={book.id}>
+                                    <BookCard {...book} />
+                                </div>
+                            ))}
                     </div>
                     <div className="newRelease-pagination"></div>
                 </div>

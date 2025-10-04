@@ -6,7 +6,8 @@
     "price": 9.99,
     "description": "Simple and delicious recipes for everyday cooking.",
     "image": "/Book1.png",
-    "category": ["Cuisine"]
+    "category": ["Cuisine"],
+    "tags": []
   },
   {
     "id": "b002",
@@ -15,7 +16,8 @@
     "price": 13.99,
     "description": "A detective novel filled with twists and unexpected turns.",
     "image": "/Book2.png",
-    "category": ["Detective Fiction", "Thriller"]
+    "category": ["Detective Fiction", "Thriller"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b003",
@@ -24,7 +26,8 @@
     "price": 15.75,
     "description": "Authentic Italian recipes to bring the flavors of Italy home.",
     "image": "/Book3.png",
-    "category": ["Cuisine"]
+    "category": ["Cuisine"],
+    "tags": []
   },
   {
     "id": "b004",
@@ -33,7 +36,8 @@
     "price": 17.5,
     "description": "A historical tale of secrets buried in time.",
     "image": "/Book4.png",
-    "category": ["Literature", "History"]
+    "category": ["Literature", "History"],
+    "tags": []
   },
   {
     "id": "b005",
@@ -42,7 +46,8 @@
     "price": 11.25,
     "description": "A creative guide to modern design and innovation.",
     "image": "/Book1.png",
-    "category": ["Design"]
+    "category": ["Design"],
+    "tags": []
   },
   {
     "id": "b006",
@@ -51,7 +56,8 @@
     "price": 19.99,
     "description": "Exploring the technologies that will shape our tomorrow.",
     "image": "/Book2.png",
-    "category": ["Technology", "Science"]
+    "category": ["Technology", "Science"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b007",
@@ -60,7 +66,8 @@
     "price": 8.5,
     "description": "Practical tips for a healthier and more mindful lifestyle.",
     "image": "/Book3.png",
-    "category": ["Psychology", "Self-Help"]
+    "category": ["Psychology", "Self-Help"],
+    "tags": []
   },
   {
     "id": "b008",
@@ -69,7 +76,8 @@
     "price": 21.0,
     "description": "A thrilling journey through the universe and beyond.",
     "image": "/Book4.png",
-    "category": ["Science", "Astronomy"]
+    "category": ["Science", "Astronomy"],
+    "tags": []
   },
   {
     "id": "b009",
@@ -78,7 +86,8 @@
     "price": 18.0,
     "description": "Essential guide for entrepreneurs starting their own business.",
     "image": "/Book1.png",
-    "category": ["Economics", "Business"]
+    "category": ["Economics", "Business"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b010",
@@ -87,7 +96,8 @@
     "price": 14.5,
     "description": "Classic book on financial literacy and mindset.",
     "image": "/Book2.png",
-    "category": ["Economics", "Self-Help"]
+    "category": ["Economics", "Self-Help"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b011",
@@ -96,7 +106,8 @@
     "price": 16.0,
     "description": "A framework for building successful startups.",
     "image": "/Book3.png",
-    "category": ["Economics", "Business", "Technology"]
+    "category": ["Economics", "Business", "Technology"],
+    "tags": []
   },
   {
     "id": "b012",
@@ -105,7 +116,8 @@
     "price": 20.0,
     "description": "Introduction to artificial intelligence for all audiences.",
     "image": "/Book4.png",
-    "category": ["Technology", "Science"]
+    "category": ["Technology", "Science"],
+    "tags": ["Best Seller", "New Releases"]
   },
   {
     "id": "b013",
@@ -114,7 +126,8 @@
     "price": 12.0,
     "description": "Learn HTML, CSS, and JavaScript from scratch.",
     "image": "/Book1.png",
-    "category": ["Technology"]
+    "category": ["Technology"],
+    "tags": []
   },
   {
     "id": "b014",
@@ -123,7 +136,8 @@
     "price": 9.5,
     "description": "A children's classic filled with fun and adventure.",
     "image": "/Book2.png",
-    "category": ["Children's Literature"]
+    "category": ["Children's Literature"],
+    "tags": []
   },
   {
     "id": "b015",
@@ -132,7 +146,8 @@
     "price": 11.0,
     "description": "Collection of timeless fairy tales for children.",
     "image": "/Book3.png",
-    "category": ["Children's Literature"]
+    "category": ["Children's Literature"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b016",
@@ -141,7 +156,8 @@
     "price": 13.5,
     "description": "How EQ matters more than IQ in success.",
     "image": "/Book4.png",
-    "category": ["Psychology", "Self-Help"]
+    "category": ["Psychology", "Self-Help"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b017",
@@ -150,7 +166,8 @@
     "price": 17.5,
     "description": "A detective story with mystery and suspense.",
     "image": "/Book1.png",
-    "category": ["Detective Fiction", "Thriller"]
+    "category": ["Detective Fiction", "Thriller"],
+    "tags": []
   },
   {
     "id": "b018",
@@ -159,7 +176,8 @@
     "price": 19.0,
     "description": "Introduction to quantum physics made simple.",
     "image": "/Book2.png",
-    "category": ["Science", "Physics"]
+    "category": ["Science", "Physics"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b019",
@@ -168,7 +186,8 @@
     "price": 13.0,
     "description": "A classic novel set in the Jazz Age of America.",
     "image": "/Book3.png",
-    "category": ["Literature"]
+    "category": ["Literature"],
+    "tags": []
   },
   {
     "id": "b020",
@@ -177,7 +196,8 @@
     "price": 14.0,
     "description": "One of the most loved romance novels of all time.",
     "image": "/Book4.png",
-    "category": ["Literature", "Romance"]
+    "category": ["Literature", "Romance"],
+    "tags": []
   },
   {
     "id": "b021",
@@ -186,7 +206,8 @@
     "price": 15.5,
     "description": "A powerful novel about racial injustice and morality.",
     "image": "/Book1.png",
-    "category": ["Literature", "Historical Fiction"]
+    "category": ["Literature", "Historical Fiction"],
+    "tags": []
   },
   {
     "id": "b022",
@@ -195,7 +216,8 @@
     "price": 11.5,
     "description": "Ancient strategies that are still relevant today.",
     "image": "/Book2.png",
-    "category": ["Economics", "Strategy", "History"]
+    "category": ["Economics", "Strategy", "History"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b023",
@@ -204,7 +226,8 @@
     "price": 18.5,
     "description": "Rules for focused success in a distracted world.",
     "image": "/Book3.png",
-    "category": ["Skill Development", "Self-Help"]
+    "category": ["Skill Development", "Self-Help"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b024",
@@ -213,7 +236,8 @@
     "price": 16.5,
     "description": "Tiny changes, remarkable results.",
     "image": "/Book4.png",
-    "category": ["Skill Development", "Self-Help"]
+    "category": ["Skill Development", "Self-Help"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b025",
@@ -222,7 +246,8 @@
     "price": 17.0,
     "description": "Timeless lessons on wealth, greed, and happiness.",
     "image": "/Book1.png",
-    "category": ["Economics", "Psychology"]
+    "category": ["Economics", "Psychology"],
+    "tags": ["Best Seller", "New Releases"]
   },
   {
     "id": "b026",
@@ -231,7 +256,8 @@
     "price": 22.0,
     "description": "The first book in the beloved Harry Potter series.",
     "image": "/Book2.png",
-    "category": ["Children's Literature", "Fantasy"]
+    "category": ["Children's Literature", "Fantasy"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b027",
@@ -240,7 +266,8 @@
     "price": 23.0,
     "description": "The second adventure of Harry Potter at Hogwarts.",
     "image": "/Book3.png",
-    "category": ["Children's Literature", "Fantasy"]
+    "category": ["Children's Literature", "Fantasy"],
+    "tags": []
   },
   {
     "id": "b028",
@@ -249,7 +276,8 @@
     "price": 20.0,
     "description": "The prelude to the Lord of the Rings trilogy.",
     "image": "/Book4.png",
-    "category": ["Literature", "Fantasy"]
+    "category": ["Literature", "Fantasy"],
+    "tags": []
   },
   {
     "id": "b029",
@@ -258,7 +286,8 @@
     "price": 30.0,
     "description": "Epic fantasy trilogy about the battle for Middle-earth.",
     "image": "/Book1.png",
-    "category": ["Literature", "Fantasy"]
+    "category": ["Literature", "Fantasy"],
+    "tags": []
   },
   {
     "id": "b030",
@@ -267,7 +296,8 @@
     "price": 25.0,
     "description": "A science fiction masterpiece set on the desert planet Arrakis.",
     "image": "/Book2.png",
-    "category": ["Science", "Science Fiction"]
+    "category": ["Science", "Science Fiction"],
+    "tags": ["Best Seller", "New Releases"]
   },
   {
     "id": "b031",
@@ -276,7 +306,8 @@
     "price": 12.0,
     "description": "The first Sherlock Holmes mystery.",
     "image": "/Book3.png",
-    "category": ["Detective Fiction", "Mystery"]
+    "category": ["Detective Fiction", "Mystery"],
+    "tags": []
   },
   {
     "id": "b032",
@@ -285,7 +316,8 @@
     "price": 14.0,
     "description": "A chilling Holmes mystery set in Dartmoor.",
     "image": "/Book4.png",
-    "category": ["Detective Fiction", "Mystery"]
+    "category": ["Detective Fiction", "Mystery"],
+    "tags": []
   },
   {
     "id": "b033",
@@ -294,7 +326,8 @@
     "price": 19.0,
     "description": "A gripping psychological thriller.",
     "image": "/Book1.png",
-    "category": ["Detective Fiction", "Thriller", "Psychology"]
+    "category": ["Detective Fiction", "Thriller", "Psychology"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b034",
@@ -303,7 +336,8 @@
     "price": 17.0,
     "description": "A modern classic thriller full of twists.",
     "image": "/Book2.png",
-    "category": ["Detective Fiction", "Thriller"]
+    "category": ["Detective Fiction", "Thriller"],
+    "tags": []
   },
   {
     "id": "b035",
@@ -312,7 +346,8 @@
     "price": 18.0,
     "description": "A Nobel laureate explains the two systems that drive the mind.",
     "image": "/Book3.png",
-    "category": ["Psychology", "Science"]
+    "category": ["Psychology", "Science"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b036",
@@ -321,7 +356,8 @@
     "price": 15.0,
     "description": "One of the most influential books about finding meaning in life.",
     "image": "/Book4.png",
-    "category": ["Psychology", "Philosophy", "Self-Help"]
+    "category": ["Psychology", "Philosophy", "Self-Help"],
+    "tags": []
   },
   {
     "id": "b037",
@@ -330,7 +366,8 @@
     "price": 22.0,
     "description": "The story of how humans became the dominant species.",
     "image": "/Book1.png",
-    "category": ["Science", "History"]
+    "category": ["Science", "History"],
+    "tags": ["Best Seller"]
   },
   {
     "id": "b038",
@@ -339,7 +376,8 @@
     "price": 24.0,
     "description": "A look into the possible futures of humanity.",
     "image": "/Book2.png",
-    "category": ["Science", "Philosophy"]
+    "category": ["Science", "Philosophy"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b039",
@@ -348,7 +386,8 @@
     "price": 20.0,
     "description": "Essays on the challenges of the modern world.",
     "image": "/Book3.png",
-    "category": ["Science", "Philosophy", "Current Events"]
+    "category": ["Science", "Philosophy", "Current Events"],
+    "tags": ["New Releases"]
   },
   {
     "id": "b040",
@@ -357,6 +396,7 @@
     "price": 19.0,
     "description": "How design shapes the way we interact with the world.",
     "image": "/Book4.png",
-    "category": ["Design", "Psychology"]
+    "category": ["Design", "Psychology"],
+    "tags": []
   }
 ]
