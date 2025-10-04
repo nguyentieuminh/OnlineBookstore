@@ -1,21 +1,38 @@
-import React from 'react';
+import React, { useState } from "react";
 import "../css/BookCard.css";
 
-const colors = [
-    "#6366F1",
-    "#10B981",
-    "#F59E0B",
-    "#EF4444",
-    "#3B82F6",
-    "#8B5CF6",
-];
+const BookCard = ({ title, author, publisher, price, description, image, category, addToCart }) => {
+    const [showPopup, setShowPopup] = useState(false);
 
-const BookCard = ({ title, author, publisher, price, description, image, category }) => {
+    const colors = [
+        "#6366F1",
+        "#10B981",
+        "#F59E0B",
+        "#EF4444",
+        "#3B82F6",
+        "#8B5CF6",
+    ];
+
+    const handleAddToCart = () => {
+        if (addToCart) {
+            addToCart({ title, author, publisher, price, description, image, category });
+            setShowPopup(true);
+
+            setTimeout(() => setShowPopup(false), 2000);
+        }
+    };
+
     return (
         <div
             className="card border-0 shadow-sm text-decoration-none p-2 mb-4 book-card"
-            style={{ borderRadius: "15px", backgroundColor: "#EEF2FF" }}
+            style={{ borderRadius: "15px", backgroundColor: "#EEF2FF", position: "relative" }}
         >
+            {showPopup && (
+                <div className="cart-popup">
+                    Added to cart!
+                </div>
+            )}
+
             <div className="position-relative d-flex justify-content-center pt-2">
                 <img
                     src={image}
@@ -28,7 +45,6 @@ const BookCard = ({ title, author, publisher, price, description, image, categor
             <div className="card-body d-flex flex-column text-start">
                 <h5 className="fw-semibold text-black mb-2">{title}</h5>
 
-                {/* Author + Publisher */}
                 <p className="small mb-2">
                     <span className="fw-semibold text-primary">{author}</span>
                     {publisher && (
@@ -72,7 +88,10 @@ const BookCard = ({ title, author, publisher, price, description, image, categor
                     ${price}
                 </h6>
 
-                <button className="btn btn-dark w-100 mt-auto">
+                <button
+                    className="btn btn-dark w-100 mt-auto"
+                    onClick={handleAddToCart}
+                >
                     <i className="bi bi-cart3 me-2"></i> Add To Cart
                 </button>
             </div>

@@ -9,7 +9,7 @@ import Books1 from "../images/Home/Books1.jpg";
 import Books2 from "../images/Home/Books2.png";
 import Award from "../images/Home/Award.png";
 
-export default function Home() {
+export default function Home({ addToCart }) {
 
     const swiperBestRef = useRef(null);
     const swiperNewRef = useRef(null);
@@ -133,7 +133,7 @@ export default function Home() {
                             .filter((book) => book.tags?.includes("Best Seller"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
-                                    <BookCard {...book} />
+                                    <BookCard {...book} addToCart={() => addToCart(book)} />
                                 </div>
                             ))}
                     </div>
@@ -222,7 +222,7 @@ export default function Home() {
                             .filter((book) => book.tags?.includes("New Releases"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
-                                    <BookCard {...book} />
+                                    <BookCard {...book} addToCart={() => addToCart(book)} />
                                 </div>
                             ))}
                     </div>

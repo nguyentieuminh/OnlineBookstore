@@ -1,0 +1,18 @@
+.quantity-control button:focus,
+.quantity-control input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.quantity-control button:hover {
+    background-color: #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.quantity-control button {
+    border-radius: 0;
+}
+.quantity-control input {
+    border-radius: 0;
+    text-align: center;
+}

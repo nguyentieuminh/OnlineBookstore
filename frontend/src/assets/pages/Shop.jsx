@@ -2,7 +2,8 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import booksRaw from "../data/books.json";
 import BookCard from "../components/BookCard.jsx";
 
-export default function Shop() {
+export default function Shop({ addToCart }) {
+
   const swiperRefs = useRef({});
   const [searchTitle, setSearchTitle] = useState("");
   const [searchAuthor, setSearchAuthor] = useState("");
@@ -112,7 +113,7 @@ export default function Shop() {
 
   return (
     <div className="container py-4">
-      <h1 className="mb-5 fw-bold">Category</h1>
+      <h2 className="mb-5 fw-semibold">Categories</h2>
 
       <div className="row mb-5">
         <div className="col-md-3 mb-2">
@@ -172,7 +173,7 @@ export default function Shop() {
             <div className="swiper-wrapper">
               {groupedByTag[tag].map((book) => (
                 <div className="swiper-slide" key={book.id}>
-                  <BookCard {...book} />
+                  <BookCard {...book} addToCart={() => addToCart(book)} />
                 </div>
               ))}
             </div>

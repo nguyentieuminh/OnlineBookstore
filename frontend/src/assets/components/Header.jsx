@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import UserAva from '../images/Header/UserAvatar.png';
 
-export default function Header() {
+export default function Header({ cartItems = [] }) {
+    const totalItems = cartItems.length;
+
     return (
         <header
             className="bg-white shadow-sm"
@@ -61,19 +62,41 @@ export default function Header() {
                     ))}
                 </nav>
 
-                <div className="d-flex gap-3 align-items-center">
-                    <img
-                        className=''
-                        src={UserAva}
-                        alt="User Avatar"
-                        style={{
-                            width: '30px',
-                            height: '30px',
-                            objectFit: 'cover',
-                            border: 'none'
-                        }}
-                    />
-                    <span className="" style={{ color: '#1E1B4B', fontWeight: '500' }}>Guest</span>
+                <div className="d-flex gap-4 align-items-center position-relative">
+                    <Link to="/cart" style={{ color: '#1E1B4B', fontSize: '20px', position: 'relative' }}>
+                        <i className="bi bi-cart"></i>
+                        {totalItems > 0 && (
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    top: '-8px',
+                                    right: '-10px',
+                                    backgroundColor: 'red',
+                                    color: '#fff',
+                                    borderRadius: '50%',
+                                    padding: '2px 6px',
+                                    fontSize: '8px',
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                {totalItems}
+                            </span>
+                        )}
+                    </Link>
+
+                    <div className="d-flex gap-2 align-items-center">
+                        <img
+                            src={UserAva}
+                            alt="User Avatar"
+                            style={{
+                                width: '30px',
+                                height: '30px',
+                                objectFit: 'cover',
+                                border: 'none'
+                            }}
+                        />
+                        <span style={{ color: '#1E1B4B', fontWeight: '500' }}>Guest</span>
+                    </div>
                 </div>
             </div>
         </header>
