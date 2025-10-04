@@ -159,10 +159,11 @@ const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
 
                                         <button
                                             className="btn btn-sm btn-outline-danger ms-1"
-                                            onClick={() => removeFromCart(index)}
+                                            onClick={() => removeFromCart(item.id)}
                                         >
                                             <i className="bi bi-trash"></i>
                                         </button>
+
                                     </div>
                                 </div>
                             </div>

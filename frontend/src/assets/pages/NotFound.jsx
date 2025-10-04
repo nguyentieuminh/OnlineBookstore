@@ -9,8 +9,7 @@ export default function NotFound() {
                 <h1 className="display-1 text-danger fw-bold">404</h1>
                 <h2 className="fw-semibold text-dark">Oops! Page Not Found</h2>
                 <p className="text-muted text-center px-3">
-                    It seems like you&apos;ve wandered off the path. The page you&apos;re
-                    looking for doesn&apos;t exist or has been moved.
+                    It seems like you've wandered off the path. The page you're looking for doesn't exist or has been moved.
                 </p>
                 <a
                     href="/"

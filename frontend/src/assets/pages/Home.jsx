@@ -9,7 +9,14 @@ import Books1 from "../images/Home/Books1.jpg";
 import Books2 from "../images/Home/Books2.png";
 import Award from "../images/Home/Award.png";
 
-export default function Home({ addToCart }) {
+export default function Home({
+    addToCart,
+    removeFromCart,
+    cartItems,
+    favourites,
+    addToFavourites,
+    removeFromFavourites
+}) {
 
     const swiperBestRef = useRef(null);
     const swiperNewRef = useRef(null);
@@ -133,7 +140,15 @@ export default function Home({ addToCart }) {
                             .filter((book) => book.tags?.includes("Best Seller"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
-                                    <BookCard {...book} addToCart={() => addToCart(book)} />
+                                    <BookCard
+                                        {...book}
+                                        addToCart={addToCart}
+                                        removeFromCart={removeFromCart}
+                                        cartItems={cartItems}
+                                        favourites={favourites}
+                                        addToFavourites={addToFavourites}
+                                        removeFromFavourites={removeFromFavourites}
+                                    />
                                 </div>
                             ))}
                     </div>
@@ -222,7 +237,15 @@ export default function Home({ addToCart }) {
                             .filter((book) => book.tags?.includes("New Releases"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
-                                    <BookCard {...book} addToCart={() => addToCart(book)} />
+                                    <BookCard
+                                        {...book}
+                                        addToCart={addToCart}
+                                        removeFromCart={removeFromCart}
+                                        cartItems={cartItems}
+                                        favourites={favourites}
+                                        addToFavourites={addToFavourites}
+                                        removeFromFavourites={removeFromFavourites}
+                                    />
                                 </div>
                             ))}
                     </div>

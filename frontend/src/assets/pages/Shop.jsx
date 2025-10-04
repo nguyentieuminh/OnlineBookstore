@@ -2,7 +2,14 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import booksRaw from "../data/books.json";
 import BookCard from "../components/BookCard.jsx";
 
-export default function Shop({ addToCart }) {
+export default function Shop({
+    addToCart,
+    removeFromCart,
+    cartItems,
+    favourites,
+    addToFavourites,
+    removeFromFavourites
+}) {
 
   const swiperRefs = useRef({});
   const [searchTitle, setSearchTitle] = useState("");
@@ -173,7 +180,15 @@ export default function Shop({ addToCart }) {
             <div className="swiper-wrapper">
               {groupedByTag[tag].map((book) => (
                 <div className="swiper-slide" key={book.id}>
-                  <BookCard {...book} addToCart={() => addToCart(book)} />
+                  <BookCard
+                    {...book}
+                    addToCart={addToCart}
+                    removeFromCart={removeFromCart}
+                    cartItems={cartItems}
+                    favourites={favourites}
+                    addToFavourites={addToFavourites}
+                    removeFromFavourites={removeFromFavourites}
+                  />
                 </div>
               ))}
             </div>

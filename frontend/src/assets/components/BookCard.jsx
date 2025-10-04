@@ -1,45 +1,83 @@
-import React, { useState } from "react";
+import React from "react";
 import "../css/BookCard.css";
 
-const BookCard = ({ title, author, publisher, price, description, image, category, addToCart }) => {
-    const [showPopup, setShowPopup] = useState(false);
+const BookCard = ({
+    id,
+    title,
+    author,
+    publisher,
+    price,
+    description,
+    image,
+    category,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    favourites,
+    addToFavourites,
+    removeFromFavourites
+}) => {
+    const isInCart = Array.isArray(cartItems) && cartItems.some(item => item.id === id);
+    const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.id === id);
 
-    const colors = [
-        "#6366F1",
-        "#10B981",
-        "#F59E0B",
-        "#EF4444",
-        "#3B82F6",
-        "#8B5CF6",
-    ];
+    const handleFavouriteClick = () => {
+        const currentBook = { id, title, author, publisher, price, description, image, category };
+        if (isFavourite) {
+            removeFromFavourites(id);
+        } else {
+            addToFavourites(currentBook);
+        }
+    };
 
-    const handleAddToCart = () => {
-        if (addToCart) {
-            addToCart({ title, author, publisher, price, description, image, category });
-            setShowPopup(true);
+    const handleAddToCartClick = () => {
+        const currentBook = {
+            id,
+            title,
+            author,
+            publisher,
+            price,
+            description,
+            image,
+            category,
+            quantity: 1
+        };
 
-            setTimeout(() => setShowPopup(false), 2000);
+        if (isInCart) {
+            removeFromCart(id);
+        } else {
+            addToCart(currentBook);
         }
     };
 
     return (
         <div
             className="card border-0 shadow-sm text-decoration-none p-2 mb-4 book-card"
-            style={{ borderRadius: "15px", backgroundColor: "#EEF2FF", position: "relative" }}
+            style={{
+                borderRadius: "15px",
+                backgroundColor: "#EEF2FF",
+                position: "relative"
+            }}
         >
-            {showPopup && (
-                <div className="cart-popup">
-                    Added to cart!
-                </div>
-            )}
-
             <div className="position-relative d-flex justify-content-center pt-2">
                 <img
                     src={image}
                     className="card-img-top"
                     alt={title}
-                    style={{ height: "250px", width: "250px", objectFit: "cover", borderRadius: "10px" }}
+                    style={{
+                        height: "250px",
+                        width: "250px",
+                        objectFit: "cover",
+                        borderRadius: "10px"
+                    }}
                 />
+                <button
+                    className="btn btn-light rounded-circle position-absolute top-0 end-0 m-2"
+                    onClick={handleFavouriteClick}
+                >
+                    <i
+                        className={`bi ${isFavourite ? "bi-heart-fill text-danger" : "bi-heart"}`}
+                    ></i>
+                </button>
             </div>
 
             <div className="card-body d-flex flex-column text-start">
@@ -63,9 +101,9 @@ const BookCard = ({ title, author, publisher, price, description, image, categor
                                     key={idx}
                                     className="badge text-white px-2 py-1"
                                     style={{
-                                        backgroundColor: colors[idx % colors.length],
+                                        backgroundColor: ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6"][idx % 6],
                                         borderRadius: "8px",
-                                        fontSize: "0.75rem"
+                                        fontSize: "0.75rem",
                                     }}
                                 >
                                     {cat}
@@ -74,7 +112,11 @@ const BookCard = ({ title, author, publisher, price, description, image, categor
                         ) : (
                             <span
                                 className="badge text-white px-2 py-1"
-                                style={{ backgroundColor: colors[0], borderRadius: "8px", fontSize: "0.75rem" }}
+                                style={{
+                                    backgroundColor: "#6366F1",
+                                    borderRadius: "8px",
+                                    fontSize: "0.75rem",
+                                }}
                             >
                                 {category}
                             </span>
@@ -88,12 +130,48 @@ const BookCard = ({ title, author, publisher, price, description, image, categor
                     ${price}
                 </h6>
 
-                <button
-                    className="btn btn-dark w-100 mt-auto"
-                    onClick={handleAddToCart}
-                >
-                    <i className="bi bi-cart3 me-2"></i> Add To Cart
-                </button>
+                <div className="d-flex justify-content-between align-items-center mt-auto">
+                    <button
+                        className="btn rounded-pill px-3 py-2 flex-grow-1 me-2"
+                        style={{
+                            backgroundColor: "#000",
+                            color: "#fff",
+                            border: "none"
+                        }}
+                        onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#333333")
+                        }
+                        onMouseOut={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#000")
+                        }
+                    >
+                        Buy Now
+                    </button>
+
+                    <button
+                        className="btn rounded-circle border"
+                        onClick={handleAddToCartClick}
+                        style={{
+                            width: "40px",
+                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: isInCart ? "#6366F1" : "#fff",
+                            borderColor: isInCart ? "#6366F1" : "#ccc"
+                        }}
+                        onMouseOver={(e) => {
+                            if (!isInCart) e.currentTarget.style.backgroundColor = "#f1f1f1";
+                        }}
+                        onMouseOut={(e) => {
+                            if (!isInCart) e.currentTarget.style.backgroundColor = "#fff";
+                        }}
+                    >
+                        <i
+                            className={`bi bi-cart3 ${isInCart ? "text-white" : "text-dark"}`}
+                        ></i>
+                    </button>
+                </div>
             </div>
         </div>
     );
