@@ -33,7 +33,7 @@ const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
                             color: "#6366F1",
                             transition: "color 0.3s ease-in-out",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#1E1B4B")}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#554f99ff")}
                         onMouseLeave={(e) => (e.currentTarget.style.color = "#6366F1")}
                     >
                         Go to Shop
