@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('YearOfPublication')->nullable();
             $table->unsignedInteger('Quantity')->default(0);
             $table->unsignedBigInteger('Price');
+            $table->unsignedBigInteger('PublisherID')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->index('BookTitle');

@@ -9,11 +9,12 @@ const BookCard = ({
     price,
     description,
     image,
-    category,
-    cartItems,
+    categories = [],
+    tags = [],
+    cartItems = [],
     addToCart,
     removeFromCart,
-    favourites,
+    favourites = [],
     addToFavourites,
     removeFromFavourites
 }) => {
@@ -21,12 +22,19 @@ const BookCard = ({
     const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.id === id);
 
     const handleFavouriteClick = () => {
-        const currentBook = { id, title, author, publisher, price, description, image, category };
-        if (isFavourite) {
-            removeFromFavourites(id);
-        } else {
-            addToFavourites(currentBook);
-        }
+        const currentBook = {
+            id,
+            title,
+            author,
+            publisher,
+            price,
+            description,
+            image,
+            categories,
+            tags,
+        };
+        if (isFavourite) removeFromFavourites(id);
+        else addToFavourites(currentBook);
     };
 
     const handleAddToCartClick = () => {
@@ -38,24 +46,32 @@ const BookCard = ({
             price,
             description,
             image,
-            category,
+            categories,
+            tags,
             quantity: 1
         };
+        if (isInCart) removeFromCart(id);
+        else addToCart(currentBook);
+    };
 
-        if (isInCart) {
-            removeFromCart(id);
-        } else {
-            addToCart(currentBook);
-        }
+    const bookImage = image && image.trim() !== "" ? image : "/images/default-book.jpg";
+
+    const formatPrice = (price) => {
+        if (typeof price !== "number") return price;
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0
+        }).format(price);
     };
 
     return (
         <div
-            className="card border-0 shadow-sm text-decoration-none p-2 mb-4 book-card"
+            className="card border-0 shadow-sm p-2 mb-4 book-card"
             style={{
                 borderRadius: "15px",
                 backgroundColor: "#EEF2FF",
-                position: "relative"
+                position: "relative",
             }}
         >
             <div className="position-relative d-flex justify-content-center pt-2">
@@ -67,7 +83,7 @@ const BookCard = ({
                         height: "250px",
                         width: "250px",
                         objectFit: "cover",
-                        borderRadius: "10px"
+                        borderRadius: "10px",
                     }}
                 />
                 <button
@@ -81,10 +97,12 @@ const BookCard = ({
             </div>
 
             <div className="card-body d-flex flex-column text-start">
-                <h5 className="fw-semibold text-black mb-2">{title}</h5>
+                <h5 className="fw-semibold text-black mb-2" style={{ minHeight: "2.5rem" }}>
+                    {title}
+                </h5>
 
                 <p className="small mb-2">
-                    <span className="fw-semibold text-primary">{author}</span>
+                    {author && <span className="fw-semibold text-primary">{author}</span>}
                     {publisher && (
                         <>
                             <span className="mx-1 text-muted">•</span>
@@ -93,41 +111,36 @@ const BookCard = ({
                     )}
                 </p>
 
-                {category && (
+                {Array.isArray(categories) && categories.length > 0 && (
                     <div className="d-flex flex-wrap gap-2 mb-2">
-                        {Array.isArray(category) ? (
-                            category.map((cat, idx) => (
-                                <span
-                                    key={idx}
-                                    className="badge text-white px-2 py-1"
-                                    style={{
-                                        backgroundColor: ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6"][idx % 6],
-                                        borderRadius: "8px",
-                                        fontSize: "0.75rem",
-                                    }}
-                                >
-                                    {cat}
-                                </span>
-                            ))
-                        ) : (
+                        {categories.map((cat, idx) => (
                             <span
+                                key={idx}
                                 className="badge text-white px-2 py-1"
                                 style={{
-                                    backgroundColor: "#6366F1",
+                                    backgroundColor: ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6"][idx % 6],
                                     borderRadius: "8px",
                                     fontSize: "0.75rem",
                                 }}
                             >
-                                {category}
+                                {cat}
                             </span>
-                        )}
+                        ))}
                     </div>
                 )}
 
-                <p className="text-muted small mb-2">{description}</p>
+                {description && (
+                    <p className="text-muted small mb-2" style={{
+                        minHeight: "3rem",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                    }}>
+                        {description.length > 90 ? `${description.slice(0, 90)}...` : description}
+                    </p>
+                )}
 
                 <h6 className="fw-bold fs-5 mb-3" style={{ color: "#6366F1" }}>
-                    ${price}
+                    {formatPrice(price)}
                 </h6>
 
                 <div className="d-flex justify-content-between align-items-center mt-auto">
@@ -136,7 +149,7 @@ const BookCard = ({
                         style={{
                             backgroundColor: "#000",
                             color: "#fff",
-                            border: "none"
+                            border: "none",
                         }}
                         onMouseOver={(e) =>
                             (e.currentTarget.style.backgroundColor = "#333333")
@@ -158,7 +171,7 @@ const BookCard = ({
                             alignItems: "center",
                             justifyContent: "center",
                             backgroundColor: isInCart ? "#6366F1" : "#fff",
-                            borderColor: isInCart ? "#6366F1" : "#ccc"
+                            borderColor: isInCart ? "#6366F1" : "#ccc",
                         }}
                         onMouseOver={(e) => {
                             if (!isInCart) e.currentTarget.style.backgroundColor = "#f1f1f1";

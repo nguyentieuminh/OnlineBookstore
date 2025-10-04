@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from 'react-router-dom';
-
 import "../css/Home.css";
 import BookCard from "../components/BookCard.jsx";
-import books from "../data/books.json";
 
 import Books1 from "../images/Home/Books1.jpg";
 import Books2 from "../images/Home/Books2.png";
@@ -17,9 +15,45 @@ export default function Home({
     addToFavourites,
     removeFromFavourites
 }) {
-
+    const [books, setBooks] = useState([]);
     const swiperBestRef = useRef(null);
     const swiperNewRef = useRef(null);
+
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const res = await fetch("http://localhost:8000/api/books");
+                if (!res.ok) throw new Error("Failed to fetch books");
+                const result = await res.json();
+
+                if (result.status && Array.isArray(result.data)) {
+                    const formattedBooks = result.data.map((book) => ({
+                        id: book.BookID,
+                        title: book.BookTitle,
+                        author: book.Author,
+                        description: book.Describe,
+                        price: book.Price,
+                        year: book.YearOfPublication,
+                        quantity: book.Quantity,
+                        tags: book.tags?.map(t => t.TagName) || [],
+                        categories: book.categories?.map(c => c.CategoryName) || [],
+                        publisher: book.publisher?.PublisherName || "Unknown",
+                        image: book.image
+                            ? book.image.startsWith('http://localhost:8000/')
+                                ? book.image.replace('http://localhost:8000', '')
+                                : book.image
+                            : '/default-book.jpg',
+                    }));
+
+                    setBooks(formattedBooks);
+                }
+            } catch (err) {
+                console.error("Error loading books:", err);
+            }
+        };
+
+        fetchBooks();
+    }, []);
 
     useEffect(() => {
         if (!window.Swiper) return;
@@ -55,16 +89,10 @@ export default function Home({
         });
 
         return () => {
-            if (swiperBestRef.current?.destroy) {
-                swiperBestRef.current.destroy(true, true);
-                swiperBestRef.current = null;
-            }
-            if (swiperNewRef.current?.destroy) {
-                swiperNewRef.current.destroy(true, true);
-                swiperNewRef.current = null;
-            }
+            if (swiperBestRef.current?.destroy) swiperBestRef.current.destroy(true, true);
+            if (swiperNewRef.current?.destroy) swiperNewRef.current.destroy(true, true);
         };
-    }, []);
+    }, [books]);
 
     return (
         <div className="home-page py-5">
@@ -79,22 +107,16 @@ export default function Home({
                 >
                     <div
                         className="col-md-6 d-flex flex-column justify-content-center px-5 h-100"
-                        style={{
-                            backgroundColor: "#EEEEEE",
-                        }}
+                        style={{ backgroundColor: "#EEEEEE" }}
                     >
-                        <h1
-                            className="fw-bold"
-                            style={{ fontSize: "2.5rem", lineHeight: "1.2" }}
-                        >
+                        <h1 className="fw-bold" style={{ fontSize: "2.5rem", lineHeight: "1.2" }}>
                             Buy your books <br />
                             <span style={{ color: "#6366F1" }}>for the best prices</span>
                         </h1>
                         <p className="text-muted mt-3" style={{ fontSize: "1rem" }}>
                             Find and read more you'll love, and keep track of the books you
                             want to read. <br />
-                            Be part of the world's largest community of book lovers on
-                            Goodreads.
+                            Be part of the world's largest community of book lovers.
                         </p>
 
                         <div className="btn px-4 py-2 rounded-2 explore-btn mt-3" style={{ width: "fit-content" }}>
@@ -124,7 +146,7 @@ export default function Home({
                 <div className="swiper bestSellerSwiper">
                     <div className="swiper-wrapper">
                         {books
-                            .filter((book) => book.tags?.includes("Best Seller"))
+                            .filter((book) => book.tags.includes("Best Seller"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
                                     <BookCard
@@ -146,33 +168,25 @@ export default function Home({
             <section className="container mt-4">
                 <div className="row align-items-center py-4 g-5">
                     <div className="col-12 col-md-6 mb-4">
-                        <img
-                            src={Books2}
-                            alt="Books"
-                            className="w-100 rounded-3"
-                        />
+                        <img src={Books2} alt="Books" className="w-100 rounded-3" />
                     </div>
-
                     <div className="col-12 col-md-6">
                         <h2 className="fw-bold mb-3">
                             Find Your Favorite <br />
                             <span style={{ color: "#6366F1" }}>Book Here!</span>
                         </h2>
                         <p className="text-muted mb-4">
-                            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                            Quo ad non reprehenderit. Reiciendis illo iusto incidunt
-                            distinctio exercitationem officiis dicta dolores dolorem
-                            et! Non saepe, voluptatum cupiditate beatae in dolore!
+                            Discover top-rated books in fiction, fantasy, and business. Join the community and enjoy reading.
                         </p>
 
                         <div className="d-flex gap-5 mb-4 flex-wrap">
                             <div>
-                                <h4 className="fw-bold mb-0">800+</h4>
-                                <small className="text-muted">Book Listing</small>
+                                <h4 className="fw-bold mb-0">{books.length}+</h4>
+                                <small className="text-muted">Books Available</small>
                             </div>
                             <div>
                                 <h4 className="fw-bold mb-0">550+</h4>
-                                <small className="text-muted">Register User</small>
+                                <small className="text-muted">Registered Users</small>
                             </div>
                             <div>
                                 <h4 className="fw-bold mb-0">1,200+</h4>
@@ -206,7 +220,6 @@ export default function Home({
                         Explore Now
                     </Link>
                 </div>
-
                 <div className="h-100 d-flex align-items-center">
                     <img
                         src={Award}
@@ -221,7 +234,7 @@ export default function Home({
                 <div className="swiper newReleaseSwiper">
                     <div className="swiper-wrapper">
                         {books
-                            .filter((book) => book.tags?.includes("New Releases"))
+                            .filter((book) => book.tags.includes("New Releases"))
                             .map((book) => (
                                 <div className="swiper-slide" key={book.id}>
                                     <BookCard
