@@ -412,7 +412,7 @@
     "author": "Yuval Noah Harari",
     "price": 24.0,
     "description": "A look into the possible futures of humanity.",
-    "image": "image/Book2.png",
+    "image": "/Book2.png",
     "category": ["Science", "Philosophy"],
     "tags": ["New Releases"],
     "publisher": "Global History"
