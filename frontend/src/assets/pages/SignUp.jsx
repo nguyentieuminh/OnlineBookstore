@@ -50,18 +50,33 @@ function Signup() {
         try {
             const response = await fetch('http://localhost:8000/api/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
                 body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    password_confirmation: passwordConfirm,
-                    dateOfBirth,
+                    Name: name,
+                    Email: email,
+                    Password: password,
+                    Password_confirmation: passwordConfirm,
+                    DateOfBirth: dateOfBirth,
                 }),
             });
 
             const data = await response.json();
+
             if (response.ok) {
+                
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.user.Role);
+                localStorage.setItem('userName', data.user.Name);
+
+                if (data.user.Role === 'admin') {
+                    navigate('/admin/dashboard');
+                } else {
+                    navigate('/');
+                }
+
                 setShowSuccess(true);
             } else {
                 setShowFailed(true);
@@ -134,7 +149,7 @@ function Signup() {
                     <button type="submit">Sign Up</button>
                 </form>
 
-                <p className="login-link">
+                <p className="login-link" style={{width: "575px"}}>
                     Already have an account?{' '}
                     <span
                         className="signup-link"
@@ -160,8 +175,8 @@ function Signup() {
                 <div className="popup-overlay">
                     <div className="popup-box">
                         <h4>✅ Account created successfully!</h4>
-                        <p>You can now login to continue</p>
-                        <button onClick={() => navigate('/login')} className="popup-confirm">Go to Login</button>
+                        <p>You are now logged in!</p>
+                        <button onClick={() => navigate('/')} className="popup-confirm">Go to Home</button>
                     </div>
                 </div>
             )}
@@ -169,7 +184,7 @@ function Signup() {
             {showFailed && (
                 <div className="popup-overlay">
                     <div className="popup-box">
-                        <h4>❌ Account created Unsuccessfully!</h4>
+                        <h4>❌ Account creation failed!</h4>
                         <button onClick={() => setShowFailed(false)} className="popup-failed">Retry</button>
                     </div>
                 </div>

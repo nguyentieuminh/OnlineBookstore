@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             'PhoneNumber' => '1111111111',
             'Gender' => 'other',
             'DateOfBirth' => '2000-01-01',
-            'Role' => 'user'
+            'Role' => 'customer'
         ]);
     }
 }
