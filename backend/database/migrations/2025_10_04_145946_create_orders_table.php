@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('OrderID');
-            $table->unsignedBigInteger('USERID'); // FK -> users
+            $table->unsignedBigInteger('USERID');
             $table->timestamp('OrderDate')->useCurrent();
             $table->unsignedBigInteger('Total');
             $table->string('Address');

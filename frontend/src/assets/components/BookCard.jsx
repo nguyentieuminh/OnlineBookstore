@@ -46,40 +46,41 @@ const BookCard = ({
         else addToFavourites(currentBook);
     };
 
-    const handleAddToCartClick = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
+    const handleAddToCartClick = () => {
         const token = localStorage.getItem("token");
         if (!token) {
             navigate("/login");
             return;
         }
 
-        const currentBook = {
-            id,
-            title,
-            author,
-            publisher,
-            price,
-            description,
-            image,
-            categories,
-            tags,
-            quantity: 1,
-        };
+        const isInCart = cartItems.some(
+            (item) => item.BookID === book.id || item.book?.BookID === book.id
+        );
 
         if (isInCart) {
             const cartItem = cartItems.find(
-                (item) => item.BookID === id || item.book?.BookID === id
+                (item) => item.BookID === book.id || item.book?.BookID === book.id
             );
 
             if (cartItem && cartItem.CartID) {
                 removeFromCart(cartItem.CartID);
             } else {
-                console.error("Không tìm thấy CartItem để xoá! BookID:", id, cartItem);
+                console.error("Không tìm thấy CartItem để xoá! BookID:", book.id, cartItem);
             }
         } else {
+            const currentBook = {
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                publisher: book.publisher,
+                price: book.price,
+                description: book.description,
+                image: book.image,
+                categories: book.categories,
+                tags: book.tags,
+                quantity: 1,
+            };
+
             addToCart(currentBook);
         }
     };

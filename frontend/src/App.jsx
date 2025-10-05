@@ -66,6 +66,20 @@ function App() {
     }
   };
 
+  const addToFavourites = (book) => {
+    setFavourites((prev) => {
+      if (prev.some((item) => item.id === book.id)) {
+        return prev;
+      }
+      return [...prev, book];
+    });
+  };
+
+  const removeFromFavourites = (id) => {
+    setFavourites((prev) => prev.filter((item) => item.id !== id));
+  };
+
+
   return (
     <div className="App">
       <Header cartItems={cartItems} favourites={favourites} />
@@ -91,6 +105,8 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
+              addToFavourites={addToFavourites}
+              removeFromFavourites={removeFromFavourites}
             />
           }
         />
@@ -103,6 +119,8 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
+              addToFavourites={addToFavourites}
+              removeFromFavourites={removeFromFavourites}
             />
           }
         />

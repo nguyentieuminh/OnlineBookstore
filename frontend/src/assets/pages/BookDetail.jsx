@@ -20,12 +20,12 @@ export default function BookDetail({
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showRemovePopup, setShowRemovePopup] = useState(false);
     const [email, setEmail] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [emailSuccess, setEmailSuccess] = useState('');
 
-    const isBookInCart = useMemo(() => {
-        return cartItems.some((item) => item.id === book?.id);
-    }, [cartItems, book]);
+    const isInCart = book && Array.isArray(cartItems) &&
+        cartItems.some((item) => item.BookID === book.id || item.book?.BookID === book.id);
+
+    const isFavourite = book && Array.isArray(favourites) &&
+        favourites.some((fav) => fav.id === book.id);
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -98,6 +98,32 @@ export default function BookDetail({
         fetchBook();
     }, [id]);
 
+    const handleFavouriteClick = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        const currentBook = {
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            publisher: book.publisher,
+            price: book.price,
+            description: book.description,
+            image: book.image,
+            categories: book.categories,
+            tags: book.tags,
+        };
+
+        if (favourites.some((f) => f.id === book.id)) {
+            removeFromFavourites(book.id);
+        } else {
+            addToFavourites(currentBook);
+        }
+    };
+
     const handleEmailSubmit = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email.trim()) {
@@ -114,19 +140,40 @@ export default function BookDetail({
     };
 
     const handleAddToCartClick = () => {
-        if (!book) return;
-        const cartItem = cartItems.find(item => item.id === book.id);
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
 
-        if (cartItem) {
-            setShowRemovePopup(true);
+        const isInCart = cartItems.some(
+            (item) => item.BookID === book.id || item.book?.BookID === book.id
+        );
+
+        if (isInCart) {
+            const cartItem = cartItems.find(
+                (item) => item.BookID === book.id || item.book?.BookID === book.id
+            );
+
+            if (cartItem && cartItem.CartID) {
+                removeFromCart(cartItem.CartID);
+            } else {
+                console.error("Không tìm thấy CartItem để xoá! BookID:", book.id, cartItem);
+            }
         } else {
             const bookWithQuantity = {
-                ...book,
-                quantity: quantity,
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                publisher: book.publisher,
+                price: book.price,
+                description: book.description,
+                image: book.image,
+                categories: book.categories,
+                tags: book.tags,
+                quantity: quantity || 1,
             };
             addToCart(bookWithQuantity);
-            setShowSuccessPopup(true);
-            setTimeout(() => setShowSuccessPopup(false), 2000);
         }
     };
 
@@ -137,17 +184,11 @@ export default function BookDetail({
     };
 
     const handleBuyNow = () => {
-        if (!book) return;
-        const itemToOrder = {
-            ...book,
-            quantity: quantity,
-        };
-
-        const existing = cartItems.find((item) => item.id === book.id);
-        if (!existing || existing.quantity !== quantity) {
-            addToCart(itemToOrder);
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
         }
-        navigate("/cart");
     };
 
     const handleQuantityChange = (e) => {
@@ -173,8 +214,6 @@ export default function BookDetail({
     }
 
     const currentPrice = (book.price * (parseInt(quantity) || 1)).toFixed(2);
-    const cartButtonClass = isBookInCart ? "btn-primary text-white" : "btn-light";
-    const cartIconClass = isBookInCart ? "bi-cart-fill" : "bi-cart3";
 
     return (
         <>
@@ -222,7 +261,7 @@ export default function BookDetail({
                         />
                     </div>
 
-                    <div className="col-12 col-lg-7 d-flex flex-column gap-4">
+                    <div className="col-12 col-lg-7 d-flex flex-column gap-3">
                         <div
                             className="container rounded-4 p-4"
                             style={{ backgroundColor: '#EEF2FF', boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }}
@@ -244,27 +283,53 @@ export default function BookDetail({
 
                         <div>
                             <span className="fw-semibold text-black me-1 fs-5">Price per unit:</span>
-                            <span className="text-primary fw-bold fs-4">${book.price.toFixed(2)}</span>
+                            <span className="fw-bold fs-4" style={{ color: "#6366F1" }}>${book.price.toFixed(2)}</span>
                         </div>
 
-                        <div className="d-flex align-items-center gap-3 mb-3">
-                            <span className='text-black fs-6 fw-semibold'>Quantity:</span>
-                            <div className="d-flex align-items-center gap-1">
+                        <div className="d-flex align-items-center gap-2 mb-3">
+                            <span className="text-black fs-6 fw-semibold">Quantity:</span>
+
+                            <div
+                                className="d-flex align-items-center rounded overflow-hidden quantity-control"
+                                style={{
+                                    border: "1px solid #000",
+                                    width: "140px",
+                                    height: "35px",
+                                }}
+                            >
                                 <button
-                                    className="btn btn-outline-secondary px-3 py-1"
+                                    className="btn btn-sm bg-light flex-fill"
+                                    style={{
+                                        borderRight: "1px solid #000",
+                                        borderRadius: 0,
+                                    }}
                                     onClick={() => setQuantity(Math.max(1, (parseInt(quantity) || 1) - 1))}
                                 >
-                                    −
+                                    –
                                 </button>
+
                                 <input
-                                    type="number"
-                                    className="form-control text-center"
-                                    style={{ maxWidth: '80px', maxHeight: '40px', fontWeight: 'bold', borderRadius: '8px' }}
+                                    type="text"
                                     value={quantity}
-                                    onChange={handleQuantityChange}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        setQuantity(isNaN(val) ? 1 : Math.max(1, val));
+                                    }}
+                                    className="form-control form-control-sm text-center flex-fill"
+                                    style={{
+                                        border: "none",
+                                        borderRadius: 0,
+                                        boxShadow: "none",
+                                        width: "40px",
+                                    }}
                                 />
+
                                 <button
-                                    className="btn btn-outline-secondary px-3 py-1"
+                                    className="btn btn-sm bg-light flex-fill"
+                                    style={{
+                                        borderLeft: "1px solid #000",
+                                        borderRadius: 0,
+                                    }}
                                     onClick={() => setQuantity((parseInt(quantity) || 1) + 1)}
                                 >
                                     +
@@ -277,50 +342,55 @@ export default function BookDetail({
                             <span className="text-danger fw-bold fs-4">${currentPrice}</span>
                         </div>
 
-                        <div className="d-flex justify-content-between align-items-center flex-shrink-0">
+                        <div className="d-flex justify-content-between align-items-center mt-2 gap-2">
                             <button
-                                className="btn btn-dark rounded-pill px-4 flex-grow-1 me-3"
+                                className="btn rounded-pill px-4 py-2 flex-grow-1 me-2"
+                                style={{
+                                    backgroundColor: "#000",
+                                    color: "#fff",
+                                    border: "none",
+                                }}
+                                onMouseOver={(e) =>
+                                    (e.currentTarget.style.backgroundColor = "#333333")
+                                }
+                                onMouseOut={(e) =>
+                                    (e.currentTarget.style.backgroundColor = "#000")
+                                }
                                 onClick={handleBuyNow}
-                                disabled={book.stock === 0}
                             >
                                 Buy Now
                             </button>
 
                             <button
-                                className={`btn rounded-circle border ${cartButtonClass}`}
+                                className="btn rounded-circle border"
                                 onClick={handleAddToCartClick}
                                 style={{
-                                    width: '45px',
-                                    height: '45px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                disabled={book.stock === 0}
-                            >
-                                <i className={`bi ${cartIconClass} fs-5`}></i>
-                            </button>
-
-                            <button
-                                className="btn btn-outline-danger rounded-circle ms-3"
-                                style={{
-                                    width: "45px",
-                                    height: "45px",
+                                    width: "40px",
+                                    height: "40px",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
+                                    backgroundColor: isInCart ? "#6366F1" : "#fff",
+                                    borderColor: isInCart ? "#6366F1" : "#ccc",
                                 }}
-                                onClick={() => {
-                                    if (favourites.some((f) => f.id === book.id))
-                                        removeFromFavourites(book.id);
-                                    else addToFavourites(book);
+                                onMouseOver={(e) => {
+                                    if (!isInCart) e.currentTarget.style.backgroundColor = "#f1f1f1";
+                                }}
+                                onMouseOut={(e) => {
+                                    if (!isInCart) e.currentTarget.style.backgroundColor = "#fff";
                                 }}
                             >
                                 <i
-                                    className={`bi ${favourites.some((f) => f.id === book.id)
-                                        ? "bi-heart-fill text-danger"
-                                        : "bi-heart"
-                                        }`}
+                                    className={`bi bi-cart3 ${isInCart ? "text-white" : "text-dark"}`}
+                                ></i>
+                            </button>
+
+                            <button
+                                className="btn btn-light rounded-circle ms-2"
+                                onClick={handleFavouriteClick}
+                            >
+                                <i
+                                    className={`bi ${isFavourite ? "bi-heart-fill text-danger" : "bi-heart"}`}
                                 ></i>
                             </button>
                         </div>
@@ -341,20 +411,71 @@ export default function BookDetail({
                         </p>
 
                         <p className="text-secondary mt-3">
-                            **Placeholder Description:** This novel is a sweeping epic that explores themes of resilience, fate, and the enduring power of human connection across generations. The author masterfully weaves complex subplots into a cohesive, unforgettable narrative that will keep readers turning pages well into the night. It's a journey not just through fictional landscapes, but deep into the human heart.
+                            This novel is an expansive and deeply immersive story that captures the struggles,
+                            triumphs, and quiet moments of humanity. With every chapter, the reader is drawn into
+                            a world that feels both fantastical and intimately familiar. The author demonstrates
+                            an extraordinary ability to balance lyrical prose with fast-paced narrative,
+                            creating a reading experience that is at once profound and exhilarating.
                         </p>
+
                         <p className="text-secondary">
-                            The world-building is meticulous and rich, painting a vivid picture of a society grappling with rapid change. Every character, no matter how minor, is given depth and a compelling backstory, contributing to the overall tapestry of the story. A must-read for fans of classic literature and modern fantasy alike.
+                            What sets this book apart is its layered exploration of universal themes:
+                            love and loss, resilience in the face of adversity, and the constant search
+                            for meaning in a rapidly changing world. Characters are brought to life with
+                            incredible depth, their relationships filled with nuance and emotional authenticity.
+                            The world-building, meanwhile, is vivid and detailed, pulling readers into a
+                            setting so realistic it almost breathes on its own.
+                        </p>
+
+                        <p className="text-secondary">
+                            Beyond its plot, this book invites readers to reflect on their own lives,
+                            posing questions that linger long after the final page is turned. It's more than
+                            a story — it's a journey that will challenge perspectives, ignite emotions,
+                            and leave an indelible mark on the heart.
                         </p>
 
                         <h3 className="fw-bold mb-3 mt-5">Reader Reviews</h3>
+
                         <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★★★ A Stunning Achievement!</p>
-                            <p className="text-secondary mb-0">"From the first page, I was completely hooked. The plot twists were genuinely surprising, and the emotional impact was profound. Easily the best book I've read all year. Highly recommended!" - *A Loyal Reader*</p>
+                            <p className="fw-bold mb-1">★★★★★ A Masterpiece of Storytelling</p>
+                            <p className="text-secondary mb-0">
+                                "I was hooked from the very first page. The author weaves a tale that feels
+                                both grand and personal, with twists that genuinely surprised me. The emotional
+                                resonance of the characters is unmatched — I laughed, I cried, and I found
+                                myself pausing to simply savor the writing. Easily the best book I’ve read
+                                in years." — <em>A Devoted Reader</em>
+                            </p>
                         </div>
+
+                        <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
+                            <p className="fw-bold mb-1">★★★★ Thought-Provoking and Richly Layered</p>
+                            <p className="text-secondary mb-0">
+                                "While the pacing may feel deliberate at times, every chapter rewards patience
+                                with profound insights and stunning imagery. This is not just a story you read —
+                                it’s one you live alongside the characters. The philosophical undertones
+                                will stay with me for a long time. Highly recommended for readers who enjoy
+                                books that make them think." — <em>Literary Enthusiast</em>
+                            </p>
+                        </div>
+
+                        <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
+                            <p className="fw-bold mb-1">★★★★★ Unforgettable Journey</p>
+                            <p className="text-secondary mb-0">
+                                "This book is a rare gem — the kind of novel you want to press into the hands
+                                of everyone you know. It’s heartfelt, adventurous, and beautifully written.
+                                The way the author captures human emotions is extraordinary. I know I’ll be
+                                rereading this again and again." — <em>Passionate Book Lover</em>
+                            </p>
+                        </div>
+
                         <div className="border p-3 rounded-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★★ Compelling and Thought-Provoking</p>
-                            <p className="text-secondary mb-0">"A brilliant, slow-burn narrative. While the pacing can be dense at times, the payoff is absolutely worth it. It challenges your perspective and leaves you thinking long after you've finished the final chapter." - *Literary Critic*</p>
+                            <p className="fw-bold mb-1">★★★ A Bit Dense but Rewarding</p>
+                            <p className="text-secondary mb-0">
+                                "At times the narrative felt a little heavy, but by the end I realized that
+                                the slower pace added richness and depth. The characters and themes make
+                                the journey worthwhile. If you’re looking for a book that challenges and
+                                rewards in equal measure, this is it." — <em>Critical Thinker</em>
+                            </p>
                         </div>
                     </div>
 
@@ -369,17 +490,32 @@ export default function BookDetail({
                                             src={b.image}
                                             className="rounded-3"
                                             width="80"
-                                            height="120"
+                                            height="80"
                                             alt={b.title}
                                             style={{ objectFit: 'cover' }}
                                         />
                                     </Link>
-                                    <div>
-                                        <Link to={`/book/${b.id}`} className="mb-1 fw-semibold text-decoration-none text-black">
+                                    <div className="d-flex flex-column">
+                                        <Link
+                                            to={`/book/${b.id}`}
+                                            className="mb-1 fw-semibold text-decoration-none text-black"
+                                        >
                                             {b.title}
                                         </Link>
-                                        <p className="text-muted small mb-1">{b.author}</p>
-                                        <p className="text-primary fw-bold mb-0">${b.price.toFixed(2)}</p>
+
+                                        <p className="small mb-2">
+                                            {b.author && <span className="fw-semibold text-primary">{b.author}</span>}
+                                            {b.publisher && (
+                                                <>
+                                                    <span className="mx-1 text-muted">•</span>
+                                                    <span className="text-muted">{b.publisher}</span>
+                                                </>
+                                            )}
+                                        </p>
+
+                                        <h6 className="fw-bold fs-6 mb-0" style={{ color: "#6366F1" }}>
+                                            ${b.price.toFixed(2)}
+                                        </h6>
                                     </div>
                                 </div>
                             ))
@@ -387,30 +523,25 @@ export default function BookDetail({
                             <p className="text-muted">No similar books found.</p>
                         )}
 
-                        <div className="text-center bg-info text-white p-4 rounded-4 mt-4">
-                            <p className="fw-semibold mb-1">Want more book recommendations?</p>
-                            <p className="fw-semibold fs-3">Subscribe to our Newsletter!</p>
+                        <div
+                            className="text-center text-white p-4 rounded-4 mt-4"
+                            style={{ backgroundColor: "#6366F1" }}
+                        >
+                            <p className="fw-semibold mb-1">Want to explore more books?</p>
+                            <p className="fw-semibold fs-3">Discover our full collection!</p>
 
-                            <div className="d-flex flex-column flex-md-row gap-2 mb-2">
-                                <input
-                                    type="email"
-                                    className="form-control border-0 rounded-3 w-full flex-grow-1"
-                                    placeholder="name@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    style={{ height: '45px' }}
-                                />
-                                <button
-                                    className="btn btn-light fw-semibold text-info px-4 rounded-3 w-full md:w-32"
-                                    onClick={handleEmailSubmit}
-                                    style={{ height: '45px' }}
-                                >
-                                    Subscribe
-                                </button>
-                            </div>
-
-                            {emailError && <small className="text-warning d-block">{emailError}</small>}
-                            {emailSuccess && <small className="text-light d-block">{emailSuccess}</small>}
+                            <Link
+                                to="/shop"
+                                className="btn fw-semibold px-4 rounded-3 mt-1"
+                                style={{
+                                    height: "45px",
+                                    backgroundColor: "#fff",
+                                    color: "#6366F1",
+                                    border: "none",
+                                }}
+                            >
+                                Explore Shop
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -439,7 +570,7 @@ export default function BookDetail({
                         ))
                     ) : (
                         <div className="col-12 text-center">
-                            <p className="text-muted">No dishes to display.</p>
+                            <p className="text-muted">No books to display.</p>
                         </div>
                     )}
                 </div>
