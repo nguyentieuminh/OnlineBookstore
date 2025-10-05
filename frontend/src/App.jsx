@@ -40,7 +40,7 @@ function App() {
     try {
       await apiPost("cart/add", {
         BookID: book.id || book.BookID,
-        Quantity: 1,
+        Quantity: book.quantity || 1,
       });
       fetchCart();
     } catch (err) {

@@ -19,7 +19,6 @@ export default function BookDetail({
     const [quantity, setQuantity] = useState(1);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showRemovePopup, setShowRemovePopup] = useState(false);
-    const [email, setEmail] = useState('');
 
     const isInCart = book && Array.isArray(cartItems) &&
         cartItems.some((item) => item.BookID === book.id || item.book?.BookID === book.id);
@@ -121,21 +120,6 @@ export default function BookDetail({
             removeFromFavourites(book.id);
         } else {
             addToFavourites(currentBook);
-        }
-    };
-
-    const handleEmailSubmit = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.trim()) {
-            setEmailError('Email address is required.');
-            setEmailSuccess('');
-        } else if (!emailRegex.test(email)) {
-            setEmailError('Email address is invalid.');
-            setEmailSuccess('');
-        } else {
-            setEmailError('');
-            setEmailSuccess("Thanks for subscribing! We'll keep you updated.");
-            setEmail('');
         }
     };
 
