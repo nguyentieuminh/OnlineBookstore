@@ -10,6 +10,7 @@ import Cart from "./assets/pages/Cart.jsx";
 import Login from "./assets/pages/Login.jsx";
 import SignUp from "./assets/pages/SignUp.jsx";
 import BookDetail from "./assets/pages/BookDetail.jsx";
+import UserProfile from "./assets/pages/UserProfile.jsx";
 import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
 
 import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
@@ -81,6 +82,7 @@ function App() {
             />
           }
         />
+
         <Route
           path="/shop"
           element={
@@ -92,6 +94,7 @@ function App() {
             />
           }
         />
+
         <Route
           path="/book/:id"
           element={
@@ -103,6 +106,7 @@ function App() {
             />
           }
         />
+
         <Route
           path="/cart"
           element={
@@ -113,9 +117,18 @@ function App() {
             />
           }
         />
+
+        <Route
+          path="/profile"
+          element={<UserProfile></UserProfile>}
+        >
+        </Route>
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+
         <Route path="/adminmanagebooks" element={<AdminManageBooks />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
 

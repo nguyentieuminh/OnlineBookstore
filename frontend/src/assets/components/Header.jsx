@@ -141,6 +141,28 @@ export default function Header({ cartItems = [] }) {
                                     zIndex: 2000,
                                 }}
                             >
+                                {isLoggedIn && (
+                                    <Link
+                                        to="/profile"
+                                        onClick={() => setDropdownOpen(false)}
+                                        style={{
+                                            padding: '8px 12px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            color: '#2c3e50',
+                                            textDecoration: 'none',
+                                            backgroundColor: 'white',
+                                            transition: 'background-color 0.2s'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                                    >
+                                        <i className="bi bi-person-circle text-black" style={{ fontSize: '18px', color: '#36b0c2' }}></i>
+                                        Profile
+                                    </Link>
+                                )}
+
                                 {isLoggedIn && !isAdmin && (
                                     <Link
                                         to="/orders"

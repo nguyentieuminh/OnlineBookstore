@@ -13,7 +13,15 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = Auth::user();
-        return response()->json($user);
+
+        return response()->json([
+            'name' => $user->Name,
+            'email' => $user->Email,
+            'phone' => $user->PhoneNumber,
+            'gender' => $user->Gender,
+            'dateOfBirth' => $user->DateOfBirth,
+            'role' => $user->Role,
+        ]);
     }
 
     public function updateProfile(Request $request)
