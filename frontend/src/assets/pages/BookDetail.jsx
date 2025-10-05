@@ -10,6 +10,7 @@ export default function BookDetail({
     addToCart,
     removeFromCart,
     cartItems,
+    updateQuantity, // <--- ĐÃ THÊM PROP NÀY
 }) {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -176,7 +177,7 @@ export default function BookDetail({
         setQuantity(newQty);
 
         if (cartItem) {
-
+            updateQuantity(cartItem.CartID, newQty);
         }
     };
 

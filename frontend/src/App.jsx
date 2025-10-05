@@ -121,6 +121,7 @@ function App() {
               favourites={favourites}
               addToFavourites={addToFavourites}
               removeFromFavourites={removeFromFavourites}
+              updateQuantity={updateQuantity}
             />
           }
         />
