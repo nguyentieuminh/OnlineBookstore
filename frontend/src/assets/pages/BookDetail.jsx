@@ -16,7 +16,21 @@ export default function BookDetail({
 
     const [book, setBook] = useState(null);
     const [similarBooks, setSimilarBooks] = useState([]);
+
+    const cartItem = cartItems.find(
+        (item) => item.BookID === book?.id || item.book?.BookID === book?.id
+    );
+
     const [quantity, setQuantity] = useState(1);
+
+    useEffect(() => {
+        if (cartItem) {
+            setQuantity(cartItem.Quantity);
+        } else {
+            setQuantity(1);
+        }
+    }, [cartItem]);
+
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showRemovePopup, setShowRemovePopup] = useState(false);
 
@@ -135,29 +149,9 @@ export default function BookDetail({
         );
 
         if (isInCart) {
-            const cartItem = cartItems.find(
-                (item) => item.BookID === book.id || item.book?.BookID === book.id
-            );
-
-            if (cartItem && cartItem.CartID) {
-                removeFromCart(cartItem.CartID);
-            } else {
-                console.error("Không tìm thấy CartItem để xoá! BookID:", book.id, cartItem);
-            }
+            removeFromCart(cartItem.CartID);
         } else {
-            const bookWithQuantity = {
-                id: book.id,
-                title: book.title,
-                author: book.author,
-                publisher: book.publisher,
-                price: book.price,
-                description: book.description,
-                image: book.image,
-                categories: book.categories,
-                tags: book.tags,
-                quantity: quantity || 1,
-            };
-            addToCart(bookWithQuantity);
+            addToCart({ ...book, quantity });
         }
     };
 
@@ -175,17 +169,14 @@ export default function BookDetail({
         }
     };
 
-    const handleQuantityChange = (e) => {
-        const value = e.target.value;
-        if (value === '') {
-            setQuantity('');
-        } else {
-            const num = parseInt(value);
+    const handleQuantityChange = (newQty) => {
+        if (newQty < 1) newQty = 1;
+        if (book && newQty > book.stock) newQty = book.stock;
 
-            if (!isNaN(num) && num > 0) {
-                const maxQty = book.stock > 0 ? book.stock : 99;
-                setQuantity(Math.min(num, maxQty));
-            }
+        setQuantity(newQty);
+
+        if (cartItem) {
+
         }
     };
 
@@ -197,7 +188,7 @@ export default function BookDetail({
         );
     }
 
-    const currentPrice = (book.price * (parseInt(quantity) || 1)).toFixed(2);
+    const currentPrice = (book.price * quantity).toFixed(2);
 
     return (
         <>
@@ -273,21 +264,14 @@ export default function BookDetail({
                         <div className="d-flex align-items-center gap-2 mb-3">
                             <span className="text-black fs-6 fw-semibold">Quantity:</span>
 
-                            <div
-                                className="d-flex align-items-center rounded overflow-hidden quantity-control"
-                                style={{
-                                    border: "1px solid #000",
-                                    width: "140px",
-                                    height: "35px",
-                                }}
-                            >
+                            <div className="d-flex align-items-center rounded overflow-hidden quantity-control"
+                                style={{ border: "1px solid #000", width: "140px", height: "35px" }}>
+
                                 <button
                                     className="btn btn-sm bg-light flex-fill"
-                                    style={{
-                                        borderRight: "1px solid #000",
-                                        borderRadius: 0,
-                                    }}
-                                    onClick={() => setQuantity(Math.max(1, (parseInt(quantity) || 1) - 1))}
+                                    style={{ borderRight: "1px solid #000", borderRadius: 0 }}
+                                    onClick={() => handleQuantityChange(quantity - 1)}
+                                    disabled={book.stock === 0}
                                 >
                                     –
                                 </button>
@@ -297,24 +281,20 @@ export default function BookDetail({
                                     value={quantity}
                                     onChange={(e) => {
                                         const val = parseInt(e.target.value, 10);
-                                        setQuantity(isNaN(val) ? 1 : Math.max(1, val));
+                                        if (!isNaN(val) && val > 0) {
+                                            handleQuantityChange(val);
+                                        }
                                     }}
                                     className="form-control form-control-sm text-center flex-fill"
-                                    style={{
-                                        border: "none",
-                                        borderRadius: 0,
-                                        boxShadow: "none",
-                                        width: "40px",
-                                    }}
+                                    style={{ border: "none", borderRadius: 0, boxShadow: "none", width: "40px" }}
+                                    disabled={book.stock === 0}
                                 />
 
                                 <button
                                     className="btn btn-sm bg-light flex-fill"
-                                    style={{
-                                        borderLeft: "1px solid #000",
-                                        borderRadius: 0,
-                                    }}
-                                    onClick={() => setQuantity((parseInt(quantity) || 1) + 1)}
+                                    style={{ borderLeft: "1px solid #000", borderRadius: 0 }}
+                                    onClick={() => handleQuantityChange(quantity + 1)}
+                                    disabled={book.stock === 0}
                                 >
                                     +
                                 </button>
