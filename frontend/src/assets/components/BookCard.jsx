@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/BookCard.css";
 
 const BookCard = ({
@@ -19,8 +19,13 @@ const BookCard = ({
     addToFavourites,
     removeFromFavourites
 }) => {
-    const isInCart = Array.isArray(cartItems) && cartItems.some(item => item.id === id);
-    const isFavourite = Array.isArray(favourites) && favourites.some(fav => fav.id === id);
+    const navigate = useNavigate();
+
+    const isInCart =
+        Array.isArray(cartItems) &&
+        cartItems.some((item) => item.BookID === id || item.book?.BookID === id);
+    const isFavourite =
+        Array.isArray(favourites) && favourites.some((fav) => fav.id === id);
 
     const handleFavouriteClick = (e) => {
         e.stopPropagation();
@@ -45,6 +50,12 @@ const BookCard = ({
         e.stopPropagation();
         e.preventDefault();
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
         const currentBook = {
             id,
             title,
@@ -55,10 +66,22 @@ const BookCard = ({
             image,
             categories,
             tags,
-            quantity: 1
+            quantity: 1,
         };
-        if (isInCart) removeFromCart(id);
-        else addToCart(currentBook);
+
+        if (isInCart) {
+            const cartItem = cartItems.find(
+                (item) => item.BookID === id || item.book?.BookID === id
+            );
+
+            if (cartItem && cartItem.CartID) {
+                removeFromCart(cartItem.CartID);
+            } else {
+                console.error("Không tìm thấy CartItem để xoá! BookID:", id, cartItem);
+            }
+        } else {
+            addToCart(currentBook);
+        }
     };
 
     const bookImage = image && image.trim() !== "" ? image : "/images/default-book.jpg";
@@ -169,6 +192,10 @@ const BookCard = ({
                             onMouseOut={(e) =>
                                 (e.currentTarget.style.backgroundColor = "#000")
                             }
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}
                         >
                             Buy Now
                         </button>

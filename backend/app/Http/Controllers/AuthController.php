@@ -12,11 +12,10 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('Email', 'Password');
+        $user = User::where('Email', $credentials['Email'])->first();
 
-        $user = User::where('Email', $credentials['email'])->first();
-
-        if (!$user || !Hash::check($credentials['password'], $user->Password)) {
+        if (!$user || !Hash::check($credentials['Password'], $user->Password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 

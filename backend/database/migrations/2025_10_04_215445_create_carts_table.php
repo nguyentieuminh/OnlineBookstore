@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->id('CartItemID');
-            $table->unsignedBigInteger('CartID');
+        Schema::create('carts', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('UserID')->nullable();
             $table->unsignedBigInteger('BookID');
             $table->integer('Quantity')->default(1);
             $table->timestamps();
-            $table->foreign('CartID')->references('CartID')->on('carts')->cascadeOnDelete();
-            $table->foreign('BookID')->references('BookID')->on('books')->restrictOnDelete();
+            $table->foreign('UserID')->references('UserID')->on('users')->onDelete('cascade');
+            $table->foreign('BookID')->references('BookID')->on('books')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('carts');
     }
 };

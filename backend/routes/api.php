@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CartController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -15,9 +16,18 @@ Route::prefix('books')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::put('/user/profile', [UserController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index']);
+        Route::post('/add', [CartController::class, 'store']);
+        Route::put('/update/{id}', [CartController::class, 'update']);
+        Route::delete('/remove/{id}', [CartController::class, 'destroy']);
+        Route::delete('/clear', [CartController::class, 'clear']);
+    });
 
     Route::middleware('admin')->prefix('books')->group(function () {
         Route::post('/', [BookController::class, 'store']);

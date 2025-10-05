@@ -1,20 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import '../css/Cart.css';
+import "../css/Cart.css";
 
 const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
-    const subtotal = items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+    const subtotal = items.reduce(
+        (sum, item) => sum + (item.book?.Price || 0) * (item.Quantity || 1),
+        0
+    );
     const shipping = items.length > 0 ? 5 : 0;
     const total = subtotal + shipping;
 
-    const colors = [
-        "#6366F1",
-        "#10B981",
-        "#F59E0B",
-        "#EF4444",
-        "#3B82F6",
-        "#8B5CF6",
-    ];
+    const colors = ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#8B5CF6"];
 
     if (items.length === 0) {
         return (
@@ -48,127 +44,120 @@ const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
             <h2 className="fw-semibold mb-4">Your Cart</h2>
             <div className="row">
                 <div className="col-md-8">
-                    {items.map((item, index) => (
-                        <div key={index} className="card mb-3 p-3 shadow-sm">
-                            <div className="row g-3 align-items-center">
-                                <div className="col-3 col-md-2">
-                                    <img
-                                        src={item.image}
-                                        alt={item.title}
-                                        className="img-fluid rounded"
-                                    />
-                                </div>
+                    {items.map((item) => {
+                        const book = item.book || {};
+                        const categories = book.categories?.map((c) => c.CategoryName) || [];
+                        const publisher = book.publisher?.PublisherName || "";
 
-                                <div className="col-6 col-md-7">
-                                    <h6 className="mb-1">{item.title}</h6>
-                                    <span className="fw-semibold text-primary">{item.author}</span>
-                                    {item.publisher && (
-                                        <>
-                                            <span className="mx-1 text-muted">•</span>
-                                            <span className="text-muted">{item.publisher}</span>
-                                        </>
-                                    )}
+                        return (
+                            <div key={item.id || item.CartID} className="card mb-3 p-3 shadow-sm">
+                                <div className="row g-3 align-items-center">
+                                    <div className="col-3 col-md-2">
+                                        <img
+                                            src={book.image || "/default-book.jpg"}
+                                            alt={book.BookTitle}
+                                            className="img-fluid rounded"
+                                        />
+                                    </div>
 
-                                    {item.category && (
-                                        <div className="d-flex flex-wrap gap-2 mt-2">
-                                            {Array.isArray(item.category) ? (
-                                                item.category.map((cat, idx) => (
+                                    <div className="col-6 col-md-7">
+                                        <h6 className="mb-1">{book.BookTitle}</h6>
+                                        <span className="fw-semibold text-primary">{book.Author}</span>
+                                        {publisher && (
+                                            <>
+                                                <span className="mx-1 text-muted">•</span>
+                                                <span className="text-muted">{publisher}</span>
+                                            </>
+                                        )}
+
+                                        {categories.length > 0 && (
+                                            <div className="d-flex flex-wrap gap-2 mt-2">
+                                                {categories.map((cat, idx) => (
                                                     <span
                                                         key={idx}
                                                         className="badge text-white px-2 py-1"
                                                         style={{
-                                                            backgroundColor:
-                                                                colors[idx % colors.length],
+                                                            backgroundColor: colors[idx % colors.length],
                                                             borderRadius: "8px",
                                                             fontSize: "0.75rem",
                                                         }}
                                                     >
                                                         {cat}
                                                     </span>
-                                                ))
-                                            ) : (
-                                                <span
-                                                    className="badge text-white px-2 py-1"
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="col-3 col-md-3 text-end">
+                                        <p className="mb-2 fs-6 fw-semibold text-danger">
+                                            ${(book.Price * (item.Quantity || 1)).toFixed(2)}
+                                        </p>
+
+                                        <div className="d-flex justify-content-end align-items-center gap-2">
+                                            <div
+                                                className="d-flex align-items-center rounded overflow-hidden quantity-control"
+                                                style={{
+                                                    border: "1px solid #000",
+                                                    width: "120px",
+                                                    height: "31px",
+                                                }}
+                                            >
+                                                <button
+                                                    className="btn btn-sm bg-light flex-fill"
                                                     style={{
-                                                        backgroundColor: colors[0],
-                                                        borderRadius: "8px",
-                                                        fontSize: "0.75rem",
+                                                        borderRight: "1px solid #000",
+                                                        borderRadius: 0,
                                                     }}
+                                                    onClick={() =>
+                                                        updateQuantity(item.id || item.CartID, Math.max(1, (item.Quantity || 1) - 1))
+                                                    }
                                                 >
-                                                    {item.category}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                                                    –
+                                                </button>
 
-                                <div className="col-3 col-md-3 text-end">
-                                    <p className="mb-2 fs-6 fw-semibold text-danger">
-                                        ${(item.price * (item.quantity || 1)).toFixed(2)}
-                                    </p>
+                                                <input
+                                                    type="text"
+                                                    value={item.Quantity || 1}
+                                                    onChange={(e) => {
+                                                        const val = parseInt(e.target.value, 10);
+                                                        updateQuantity(item.id || item.CartID, isNaN(val) ? 1 : Math.max(1, val));
+                                                    }}
+                                                    className="form-control form-control-sm text-center flex-fill"
+                                                    style={{
+                                                        border: "none",
+                                                        borderRadius: 0,
+                                                        boxShadow: "none",
+                                                        width: "40px",
+                                                    }}
+                                                />
 
-                                    <div className="d-flex justify-content-end align-items-center gap-2">
-                                        <div
-                                            className="d-flex align-items-center rounded overflow-hidden quantity-control"
-                                            style={{
-                                                border: "1px solid #000",
-                                                width: "120px",
-                                                height: "31px"
-                                            }}
-                                        >
-                                            <button
-                                                className="btn btn-sm bg-light flex-fill"
-                                                style={{
-                                                    borderRight: "1px solid #000",
-                                                    borderRadius: 0,
-                                                }}
-                                                onClick={() =>
-                                                    updateQuantity(index, Math.max(1, (item.quantity || 1) - 1))
-                                                }
-                                            >
-                                                –
-                                            </button>
-
-                                            <input
-                                                type="text"
-                                                value={item.quantity || 1}
-                                                onChange={(e) => {
-                                                    const val = parseInt(e.target.value, 10);
-                                                    updateQuantity(index, isNaN(val) ? 1 : Math.max(1, val));
-                                                }}
-                                                className="form-control form-control-sm text-center flex-fill"
-                                                style={{
-                                                    border: "none",
-                                                    borderRadius: 0,
-                                                    boxShadow: "none",
-                                                    width: "40px"
-                                                }}
-                                            />
+                                                <button
+                                                    className="btn btn-sm bg-light flex-fill"
+                                                    style={{
+                                                        borderLeft: "1px solid #000",
+                                                        borderRadius: 0,
+                                                    }}
+                                                    onClick={() =>
+                                                        updateQuantity(item.id || item.CartID, (item.Quantity || 1) + 1)
+                                                    }
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
 
                                             <button
-                                                className="btn btn-sm bg-light flex-fill"
-                                                style={{
-                                                    borderLeft: "1px solid #000",
-                                                    borderRadius: 0,
-                                                }}
-                                                onClick={() => updateQuantity(index, (item.quantity || 1) + 1)}
+                                                className="btn btn-sm btn-outline-danger ms-1"
+                                                onClick={() => removeFromCart(item.id || item.CartID)}
                                             >
-                                                +
+                                                <i className="bi bi-trash"></i>
                                             </button>
                                         </div>
-
-                                        <button
-                                            className="btn btn-sm btn-outline-danger ms-1"
-                                            onClick={() => removeFromCart(item.id)}
-                                        >
-                                            <i className="bi bi-trash"></i>
-                                        </button>
-
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 <div className="col-md-4">

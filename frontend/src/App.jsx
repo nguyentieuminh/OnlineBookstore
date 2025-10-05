@@ -1,75 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
 
-import Header from './assets/components/Header.jsx';
-import Footer from './assets/components/Footer.jsx';
+import Header from "./assets/components/Header.jsx";
+import Footer from "./assets/components/Footer.jsx";
 import NotFound from "./assets/pages/NotFound.jsx";
-import Home from './assets/pages/Home.jsx';
-import Shop from './assets/pages/Shop.jsx';
-import Cart from './assets/pages/Cart.jsx';
+import Home from "./assets/pages/Home.jsx";
+import Shop from "./assets/pages/Shop.jsx";
+import Cart from "./assets/pages/Cart.jsx";
 import Login from "./assets/pages/Login.jsx";
 import SignUp from "./assets/pages/SignUp.jsx";
 import BookDetail from "./assets/pages/BookDetail.jsx";
 import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
 
+import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [favourites, setFavourites] = useState([]);
-  const [loaded, setLoaded] = useState(false);
+
+  const fetchCart = async () => {
+    try {
+      const data = await apiGet("cart");
+      const normalized = (data.data || []).map(item => ({
+        ...item,
+        CartID: item.CartID || item.id
+      }));
+      setCartItems(normalized);
+    } catch (err) {
+      console.error("Lỗi lấy giỏ hàng:", err);
+    }
+  };
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    const storedFav = localStorage.getItem("favourites");
-
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    }
-    if (storedFav) {
-      setFavourites(JSON.parse(storedFav));
-    }
-    setLoaded(true);
+    fetchCart();
   }, []);
 
-  useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("cart", JSON.stringify(cartItems));
-      localStorage.setItem("favourites", JSON.stringify(favourites));
+  const addToCart = async (book) => {
+    try {
+      await apiPost("cart/add", {
+        BookID: book.id || book.BookID,
+        Quantity: 1,
+      });
+      fetchCart();
+    } catch (err) {
+      console.error("Lỗi thêm giỏ hàng:", err);
     }
-  }, [cartItems, favourites, loaded]);
-
-  const addToCart = (book) => {
-    setCartItems((prev) => {
-      const existingIndex = prev.findIndex((item) => item.id === book.id);
-      if (existingIndex >= 0) {
-        return prev.map((item, i) =>
-          i === existingIndex ? { ...item, quantity: (item.quantity || 1) + 1 } : item
-        );
-      }
-      return [...prev, { ...book, quantity: 1 }];
-    });
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter(item => item.id !== id));
+  const updateQuantity = async (id, newQuantity) => {
+    try {
+      await apiPut(`cart/update/${id}`, { Quantity: newQuantity });
+      fetchCart();
+    } catch (err) {
+      console.error("Lỗi cập nhật số lượng:", err);
+    }
   };
 
-  const updateQuantity = (index, newQuantity) => {
-    setCartItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const addToFavourites = (book) => {
-    setFavourites((prev) => {
-      if (prev.some((fav) => fav.id === book.id)) return prev;
-      return [...prev, book];
-    });
-  };
-
-  const removeFromFavourites = (id) => {
-    setFavourites((prev) => prev.filter((fav) => fav.id !== id));
+  const removeFromCart = async (id) => {
+    try {
+      await apiDelete(`cart/remove/${id}`);
+      fetchCart();
+    } catch (err) {
+      console.error("Lỗi xóa giỏ hàng:", err);
+    }
   };
 
   return (
@@ -85,12 +78,9 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
-              addToFavourites={addToFavourites}
-              removeFromFavourites={removeFromFavourites}
             />
           }
         />
-
         <Route
           path="/shop"
           element={
@@ -99,12 +89,9 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
-              addToFavourites={addToFavourites}
-              removeFromFavourites={removeFromFavourites}
             />
           }
         />
-
         <Route
           path="/book/:id"
           element={
@@ -113,12 +100,9 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
-              addToFavourites={addToFavourites}
-              removeFromFavourites={removeFromFavourites}
             />
           }
         />
-
         <Route
           path="/cart"
           element={
@@ -129,12 +113,10 @@ function App() {
             />
           }
         />
-        <Route path="*" element={<NotFound />} />
-
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-
         <Route path="/adminmanagebooks" element={<AdminManageBooks />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <Footer />
