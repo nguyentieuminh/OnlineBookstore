@@ -195,6 +195,12 @@ const BookCard = ({
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+
+                                const token = localStorage.getItem("token");
+                                if (!token) {
+                                    navigate("/login");
+                                    return;
+                                }
                             }}
                         >
                             Buy Now
