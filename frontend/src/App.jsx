@@ -93,6 +93,8 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               favourites={favourites}
+              addToFavourites={addToFavourites}
+              removeFromFavourites={removeFromFavourites}
             />
           }
         />

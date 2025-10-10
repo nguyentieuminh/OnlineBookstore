@@ -10,7 +10,7 @@ export default function BookDetail({
     addToCart,
     removeFromCart,
     cartItems,
-    updateQuantity, // <--- ĐÃ THÊM PROP NÀY
+    updateQuantity,
 }) {
     const { id } = useParams();
     const navigate = useNavigate();
