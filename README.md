@@ -4,10 +4,10 @@
 npm i        (frontend)
 composer i   (backend)
 
-- Cài thư viện lucide-react
+- Cài thư viện lucide-react (frontend)
 npm install lucide-react
 
-- Cài thư viện toastify
+- Cài thư viện toastify (frontend)
 npm install react-toastify
 
 - Copy .env và sửa lại DB   (backend)
