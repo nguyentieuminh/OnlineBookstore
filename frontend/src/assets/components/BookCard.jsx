@@ -202,6 +202,22 @@ const BookCard = ({
                                     navigate("/login");
                                     return;
                                 }
+
+                                const selectedBook = {
+                                    id,
+                                    title,
+                                    image,
+                                    price,
+                                    quantity: 1,
+                                    author,
+                                    publisher,
+                                    description,
+                                    categories
+                                };
+
+                                navigate("/orderform", {
+                                    state: { items: [selectedBook] },
+                                });
                             }}
                         >
                             Buy Now

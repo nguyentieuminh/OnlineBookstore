@@ -11,6 +11,8 @@ import Login from "./assets/pages/Login.jsx";
 import SignUp from "./assets/pages/SignUp.jsx";
 import BookDetail from "./assets/pages/BookDetail.jsx";
 import UserProfile from "./assets/pages/UserProfile.jsx";
+import Orders from "./assets/pages/Orders.jsx";
+import OrderForm from "./assets/pages/OrderForm.jsx";
 import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
 
 import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
@@ -79,6 +81,44 @@ function App() {
     setFavourites((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const [orders, setOrders] = useState(() => {
+    try {
+      const saved = localStorage.getItem('bookstore-orders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('bookstore-orders', JSON.stringify(orders));
+  }, [orders]);
+
+  const genOrderId = () =>
+    (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
+  const handlePlaceOrderFromCart = (items) => {
+    const now = new Date().toISOString();
+    const normalized = (items || []).map(it => ({
+      id: genOrderId(),
+      items: [it],
+      status_ref: { label: "Pending Confirmation", color: "#6c757d", code: "pending" },
+      order_date: now,
+      total: Number(it.price) * Number(it.quantity),
+      discount_total: 0,
+      address: localStorage.getItem('order_address') || '',
+      recipient_info: JSON.parse(localStorage.getItem('order_recipient') || '{}'),
+      note: '',
+    }));
+
+    setOrders(prev => {
+      const next = [...prev, ...normalized];
+      localStorage.setItem('bookstore-orders', JSON.stringify(next));
+      return next;
+    });
+  };
 
   return (
     <div className="App">
@@ -133,10 +173,19 @@ function App() {
           element={
             <Cart
               items={cartItems}
+              setItems={setCartItems}
               removeFromCart={removeFromCart}
               updateQuantity={updateQuantity}
+              onPlaceOrder={handlePlaceOrderFromCart}
             />
           }
+        />
+
+        <Route path="/orderform" element={<OrderForm />} />
+
+        <Route
+          path="/orders"
+          element={<Orders />}
         />
 
         <Route

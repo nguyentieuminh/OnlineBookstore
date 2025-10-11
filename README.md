@@ -4,6 +4,12 @@
 npm i        (frontend)
 composer i   (backend)
 
+- Cài thư viện lucide-react
+npm install lucide-react
+
+- Cài thư viện toastify
+npm install react-toastify
+
 - Copy .env và sửa lại DB   (backend)
 WINDOW:           copy .env.example .env
 LINUX | UBUNTU:   cp .env.example .env

@@ -104,6 +104,7 @@ export const addToCart = (bookId, quantity = 1) =>
 export const updateCartItem = (id, quantity) =>
     apiPut(`cart/update/${id}`, { Quantity: quantity });
 export const removeCartItem = (id) => apiDelete(`cart/remove/${id}`);
+export const clearCart = () => apiDelete("cart/clear");
 
 export const placeOrder = (orderData) => apiPost("orders/place", orderData);
 export const getUserOrders = () => apiGet("orders");

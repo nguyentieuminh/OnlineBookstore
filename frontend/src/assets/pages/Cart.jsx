@@ -1,8 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/Cart.css";
+import { clearCart } from "../../api.js";
 
-const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
+const Cart = ({ items = [], setItems, removeFromCart, updateQuantity }) => {
+
+    const navigate = useNavigate();
+
     const subtotal = items.reduce(
         (sum, item) => sum + (item.book?.Price || 0) * (item.Quantity || 1),
         0
@@ -177,7 +181,37 @@ const Cart = ({ items = [], removeFromCart, updateQuantity }) => {
                             <span>Total</span>
                             <span className="text-danger">${total.toFixed(2)}</span>
                         </div>
-                        <button className="btn btn-dark w-100">Proceed to Checkout</button>
+
+                        <button
+                            className="btn btn-dark w-100"
+                            onClick={async () => {
+                                if (items.length === 0) return;
+
+                                try {
+
+                                    const formattedItems = items.map((item) => {
+                                        const book = item.book || {};
+                                        return {
+                                            id: book.BookID,
+                                            title: book.BookTitle,
+                                            author: book.Author,
+                                            publisher: book.publisher?.PublisherName || "",
+                                            categories: book.categories?.map((c) => c.CategoryName) || [],
+                                            image: book.image || "/default-book.jpg",
+                                            price: book.Price || 0,
+                                            quantity: item.Quantity || 1,
+                                        };
+                                    });
+
+                                    navigate("/orderform", { state: { items: formattedItems } });
+
+                                } catch (err) {
+                                    console.error("Failed to clear cart:", err);
+                                }
+                            }}
+                        >
+                            Proceed to Checkout
+                        </button>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -27,6 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/update/{id}', [CartController::class, 'update']);
         Route::delete('/remove/{id}', [CartController::class, 'destroy']);
         Route::delete('/clear', [CartController::class, 'clear']);
+    });
+
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/place', [OrderController::class, 'store']);
+        Route::patch('/{id}/cancel', [OrderController::class, 'cancel']);
     });
 
     Route::middleware('admin')->prefix('books')->group(function () {
