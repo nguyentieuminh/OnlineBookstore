@@ -43,6 +43,8 @@ export default function OrderForm({ setOrders }) {
 
   const [paymentMethod, setPaymentMethod] = useState(() => localStorage.getItem('order_payment_method') || 'cod');
 
+  const [shippingMethod, setShippingMethod] = useState(() => localStorage.getItem('order_shipping_method') || 'standard');
+
   const [customerNote, setCustomerNote] = useState('');
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -79,7 +81,10 @@ export default function OrderForm({ setOrders }) {
     fetchUserInfo();
   }, []);
 
-  const shippingFee = Number(localStorage.getItem('shipping_fee') ?? 5);
+  const [shippingFee, setShippingFee] = useState(() => {
+    const stored = localStorage.getItem('shipping_fee');
+    return stored ? Number(stored) : 5;
+  });
 
   const itemsSubtotal = React.useMemo(() => {
     return Array.isArray(items)
@@ -249,6 +254,7 @@ export default function OrderForm({ setOrders }) {
         address,
         recipient,
         payment_method: paymentMethod,
+        shipping_method: shippingMethod,
         note: customerNote,
       };
 
@@ -279,6 +285,18 @@ export default function OrderForm({ setOrders }) {
     setPaymentMethod(e.target.value);
     localStorage.setItem('order_payment_method', e.target.value);
   };
+
+  const handleShippingChange = (e) => {
+    setShippingMethod(e.target.value);
+    localStorage.setItem('order_shipping_method', e.target.value);
+  };
+
+  useEffect(() => {
+    let fee = 5;
+    if (shippingMethod === 'express') fee = 10;
+    setShippingFee(fee);
+    localStorage.setItem('shipping_fee', fee);
+  }, [shippingMethod]);
 
   return (
     <div className="container py-4 mb-4" style={{ maxWidth: 900 }}>
@@ -465,6 +483,51 @@ export default function OrderForm({ setOrders }) {
                     onChange={handlePaymentChange}
                   />
                   <span>Bank Transfer</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-4">
+        <div className="border rounded bg-white" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+          <div className="p-3 p-md-4">
+            <div className="d-flex align-items-center gap-2 mb-3">
+              <span className="d-inline-flex align-items-center justify-content-center" style={{ width: 28, height: 28, borderRadius: '50%', color: '#16a34a' }} aria-hidden>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 8h-3V4H3a1 1 0 0 0-1 1v13h2a3 3 0 0 0 6 0h6a3 3 0 0 0 6 0h2v-5a5 5 0 0 0-5-5zM6 19a1 1 0 1 1 1-1 1 1 0 0 1-1 1zm12 0a1 1 0 1 1 1-1 1 1 0 0 1-1 1zM20 13h-5V9h3a2 2 0 0 1 2 2z" />
+                </svg>
+              </span>
+              <span className="fw-semibold">Shipping Method</span>
+            </div>
+
+            <div className="row g-2">
+              <div className="col-12 col-md-6">
+                <label className="form-check d-flex align-items-center gap-2 border rounded p-2">
+                  <input
+                    type="radio"
+                    className="form-check-input m-0"
+                    name="shipping"
+                    value="standard"
+                    checked={shippingMethod === 'standard'}
+                    onChange={handleShippingChange}
+                  />
+                  <span>Standard Shipping (3–5 days) – $5</span>
+                </label>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <label className="form-check d-flex align-items-center gap-2 border rounded p-2">
+                  <input
+                    type="radio"
+                    className="form-check-input m-0"
+                    name="shipping"
+                    value="express"
+                    checked={shippingMethod === 'express'}
+                    onChange={handleShippingChange}
+                  />
+                  <span>Express Shipping (1–2 days) – $10</span>
                 </label>
               </div>
             </div>
