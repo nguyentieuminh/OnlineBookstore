@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -17,7 +18,6 @@ Route::prefix('books')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::put('/user/profile', [UserController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -30,11 +30,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/clear', [CartController::class, 'clear']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/orders', [OrderController::class, 'index']);
-        Route::post('/orders', [OrderController::class, 'store']);
-        Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::post('/', [OrderController::class, 'store']);
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
     });
+
+    Route::prefix('books')->group(function () {
+        Route::get('/{bookId}/reviews', [ReviewController::class, 'index']);
+        Route::post('/{bookId}/reviews', [ReviewController::class, 'store']);
+    });
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 
     Route::middleware('admin')->prefix('books')->group(function () {
         Route::post('/', [BookController::class, 'store']);

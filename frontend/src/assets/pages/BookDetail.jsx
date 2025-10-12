@@ -18,6 +18,10 @@ export default function BookDetail({
     const [book, setBook] = useState(null);
     const [similarBooks, setSimilarBooks] = useState([]);
 
+    const [showAllReviews, setShowAllReviews] = useState(false);
+
+    const [ratingError, setRatingError] = useState("");
+
     const cartItem = cartItems.find(
         (item) => item.BookID === book?.id || item.book?.BookID === book?.id
     );
@@ -196,6 +200,92 @@ export default function BookDetail({
             updateQuantity(cartItem.CartID, newQty);
         }
     };
+
+    const [reviews, setReviews] = useState([]);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    const fetchReviews = async () => {
+        try {
+            const res = await fetch(`http://localhost:8000/api/books/${id}/reviews`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            });
+            const data = await res.json();
+            if (data.status) setReviews(data.data);
+        } catch (err) {
+            console.error("Failed to fetch reviews:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, [id]);
+
+    const handleSubmitReview = async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login", { state: { from: `/book/${id}` } });
+            return;
+        }
+
+        if (!rating) {
+            setRatingError("Please select a rating before submitting.");
+            return;
+        } else {
+            setRatingError("");
+        }
+
+        setSubmitting(true);
+
+        try {
+            const currentUserID = localStorage.getItem("userID");
+            const existingReview = reviews.find(r => r.user?.UserID === Number(currentUserID));
+
+            let url = `http://localhost:8000/api/books/${id}/reviews`;
+            let method = "POST";
+            let body = { rating, comment };
+
+            if (existingReview) {
+                url += `/${existingReview.id}`;
+                method = "PUT";
+            }
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(body),
+            });
+
+            const data = await res.json();
+
+            if (data.status) {
+                await fetchReviews();
+                alert(existingReview ? "Your review has been updated!" : "Your review has been added!");
+                setRating(0);
+                setComment("");
+            }
+            else {
+                alert(data.message || "Failed to submit review.");
+            }
+        } catch (err) {
+            console.error("Error submitting review:", err);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const averageRating = useMemo(() => {
+        if (!reviews.length) return 0;
+        const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+        return (sum / reviews.length).toFixed(1);
+    }, [reviews]);
+
 
     if (!book) {
         return (
@@ -415,49 +505,112 @@ export default function BookDetail({
                             and leave an indelible mark on the heart.
                         </p>
 
-                        <h3 className="fw-bold mb-3 mt-5">Reader Reviews</h3>
+                        <section className="container mt-0 mb-5 p-0">
+                            <h3 className="fw-bold mb-3 mt-5">Reader Reviews</h3>
 
-                        <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★★★ A Masterpiece of Storytelling</p>
-                            <p className="text-secondary mb-0">
-                                "I was hooked from the very first page. The author weaves a tale that feels
-                                both grand and personal, with twists that genuinely surprised me. The emotional
-                                resonance of the characters is unmatched — I laughed, I cried, and I found
-                                myself pausing to simply savor the writing. Easily the best book I’ve read
-                                in years." — <em>A Devoted Reader</em>
-                            </p>
-                        </div>
+                            {reviews.length > 0 && (
+                                <div className="mb-3">
+                                    <strong className="fs-5 text-warning">
+                                        ★ {averageRating}
+                                    </strong>
+                                    <span className="text-muted ms-2">
+                                        ({reviews.length} {reviews.length > 1 ? "reviews" : "review"})
+                                    </span>
+                                </div>
+                            )}
 
-                        <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★★ Thought-Provoking and Richly Layered</p>
-                            <p className="text-secondary mb-0">
-                                "While the pacing may feel deliberate at times, every chapter rewards patience
-                                with profound insights and stunning imagery. This is not just a story you read —
-                                it’s one you live alongside the characters. The philosophical undertones
-                                will stay with me for a long time. Highly recommended for readers who enjoy
-                                books that make them think." — <em>Literary Enthusiast</em>
-                            </p>
-                        </div>
+                            <div className="d-flex flex-column gap-3">
+                                {reviews.slice(0, showAllReviews ? reviews.length : 5).map((rev) => (
+                                    <div key={rev.id} className="p-3 rounded-4 border bg-white shadow-sm review-item text-start">
+                                        <div className="d-flex align-items-center mb-2">
+                                            <div
+                                                className="rounded-circle bg-secondary-subtle d-flex justify-content-center align-items-center me-3"
+                                                style={{ width: "45px", height: "45px" }}
+                                            >
+                                                <i className="bi bi-person fs-5 text-secondary"></i>
+                                            </div>
 
-                        <div className="border p-3 rounded-3 mb-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★★★ Unforgettable Journey</p>
-                            <p className="text-secondary mb-0">
-                                "This book is a rare gem — the kind of novel you want to press into the hands
-                                of everyone you know. It’s heartfelt, adventurous, and beautifully written.
-                                The way the author captures human emotions is extraordinary. I know I’ll be
-                                rereading this again and again." — <em>Passionate Book Lover</em>
-                            </p>
-                        </div>
+                                            <div className="flex-grow-1">
+                                                <h6 className="mb-0 fw-semibold">{rev.user?.Name || "Anonymous"}</h6>
+                                                <small className="text-muted">
+                                                    {new Date(rev.created_at).toLocaleDateString()}
+                                                </small>
+                                            </div>
 
-                        <div className="border p-3 rounded-3" style={{ borderColor: '#dee2e6!important' }}>
-                            <p className="fw-bold mb-1">★★★ A Bit Dense but Rewarding</p>
-                            <p className="text-secondary mb-0">
-                                "At times the narrative felt a little heavy, but by the end I realized that
-                                the slower pace added richness and depth. The characters and themes make
-                                the journey worthwhile. If you’re looking for a book that challenges and
-                                rewards in equal measure, this is it." — <em>Critical Thinker</em>
-                            </p>
-                        </div>
+                                            <div className="review-stars">
+                                                {"★".repeat(rev.rating)}
+                                                {"☆".repeat(5 - rev.rating)}
+                                            </div>
+                                        </div>
+
+                                        {rev.comment && (
+                                            <p className="text-secondary mb-0" style={{ lineHeight: "1.5" }}>
+                                                {rev.comment}
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {reviews.length > 5 && (
+                                <div className="text-center mt-3">
+                                    <button
+                                        className="btn rounded-pill px-4"
+                                        onClick={() => setShowAllReviews(!showAllReviews)}
+                                        style={{
+                                            textDecoration: 'underline',
+                                            color: '#6366F1',
+                                            transition: 'color 0.3s ease-in-out',
+                                            border: 'none'
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = '#554f99ff'}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = '#6366F1'}
+                                    >
+                                        {showAllReviews ? "Show Less" : "Show More"}
+                                    </button>
+                                </div>
+                            )}
+
+                            <hr className="my-4" />
+
+                            <form onSubmit={handleSubmitReview} className="p-4 rounded-4 shadow-sm" style={{ backgroundColor: "#F8F9FA" }}>
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold">Your Rating:</label>
+                                    
+                                    <div className="d-flex gap-2 mt-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <i
+                                                key={star}
+                                                className={`bi bi-star${star <= rating ? "-fill text-warning" : ""}`}
+                                                style={{ cursor: "pointer", fontSize: "1.5rem" }}
+                                                onClick={() => setRating(star)}
+                                            ></i>
+                                        ))}
+                                    </div>
+
+                                    {ratingError && <small className="text-danger mt-1 d-block">{ratingError}</small>}
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold">Your Comment:</label>
+                                    <textarea
+                                        className="form-control rounded-3"
+                                        rows="3"
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        placeholder="Share your thoughts about this book..."
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-dark rounded-pill px-4 fw-semibold"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? "Submitting..." : "Submit Review"}
+                                </button>
+                            </form>
+                        </section>
                     </div>
 
                     <div className="col-lg-5 ps-lg-5 mt-5 mt-lg-0" style={{ position: 'sticky', top: '90px', alignSelf: 'flex-start' }}>
@@ -530,7 +683,7 @@ export default function BookDetail({
 
             <hr />
 
-            <section className='container my-5'>
+            <section className='container mt-5 mb-0'>
                 <div className='d-flex justify-content-center mb-3'>
                     <h3 className="fw-bold">You might also like these books</h3>
                 </div>
