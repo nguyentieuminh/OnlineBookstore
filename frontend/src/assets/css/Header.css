@@ -1,0 +1,39 @@
+.header-nav-link {
+    position: relative;
+    color: #1E1B4B;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 4px;
+}
+
+.header-nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0%;
+    height: 3px;
+    background-color: #6366F1;
+    transition: all 0.3s ease-in-out;
+    border-radius: 3px;
+    transform: translateX(-50%);
+}
+
+.header-nav-link:hover {
+    color: #6366F1;
+    transform: translateY(-2px);
+}
+
+.header-nav-link:hover::after {
+    width: 100%;
+}
+
+.header-nav-link.active {
+    color: #6366F1;
+    font-weight: 600;
+}
+
+.header-nav-link.active::after {
+    width: 100%;
+}

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import UserAva from '../images/Header/UserAvatar.png';
+import '../css/Header.css'
 
 export default function Header({ cartItems = [] }) {
+    const location = useLocation();
     const totalItems = cartItems.length;
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -68,23 +70,22 @@ export default function Header({ cartItems = [] }) {
                         { to: '/favourite', label: 'Favourite' },
                         { to: '/contact', label: 'Contact' },
                         { to: '/about', label: 'About us' },
-                    ].map((item, idx) => (
-                        <Link
-                            key={idx}
-                            to={item.to}
-                            className="nav-link"
-                            style={{
-                                color: '#1E1B4B',
-                                textDecoration: 'none',
-                                fontWeight: '500',
-                                transition: 'color 0.3s',
-                            }}
-                            onMouseEnter={(e) => (e.target.style.color = '#6366F1')}
-                            onMouseLeave={(e) => (e.target.style.color = '#1E1B4B')}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
+                    ].map((item, idx) => {
+                        const isActive =
+                            item.to === '/'
+                                ? location.pathname === '/'
+                                : location.pathname.startsWith(item.to);
+
+                        return (
+                            <Link
+                                key={idx}
+                                to={item.to}
+                                className={`header-nav-link ${isActive ? 'active' : ''}`}
+                            >
+                                {item.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 <div className="d-flex gap-4 align-items-center position-relative" ref={dropdownRef}>
