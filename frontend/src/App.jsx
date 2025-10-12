@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Header from "./assets/components/Header.jsx";
 import Footer from "./assets/components/Footer.jsx";
@@ -13,11 +13,17 @@ import BookDetail from "./assets/pages/BookDetail.jsx";
 import UserProfile from "./assets/pages/UserProfile.jsx";
 import Orders from "./assets/pages/Orders.jsx";
 import OrderForm from "./assets/pages/OrderForm.jsx";
-import AdminManageBooks from "./assets/pages/AdminManageBooks.jsx";
+import ProtectedRoute from "./assets/components/ProtectedRoute.jsx";
+import AdminHeader from "./assets/components/AdminHeader.jsx";
+import AdminBookManagement from "./assets/pages/AdminBookManagement.jsx";
+import AdminAddNewBook from "./assets/pages/AdminAddNewBook.jsx";
 
 import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   const [cartItems, setCartItems] = useState([]);
   const [favourites, setFavourites] = useState([]);
 
@@ -122,7 +128,12 @@ function App() {
 
   return (
     <div className="App">
-      <Header cartItems={cartItems} favourites={favourites} />
+
+      {isAdminRoute ? (
+        <AdminHeader />
+      ) : (
+        <Header cartItems={cartItems} favourites={favourites} />
+      )}
 
       <Routes>
         <Route
@@ -197,7 +208,32 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
-        <Route path="/adminmanagebooks" element={<AdminManageBooks />} />
+        <Route
+          path="/admin/books"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminBookManagement />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/book/add"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminAddNewBook />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/book/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminAddNewBook />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -18,6 +18,7 @@ Route::prefix('books')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::put('/user/profile', [UserController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -41,10 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{bookId}/reviews', [ReviewController::class, 'store']);
     });
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+});
 
-    Route::middleware('admin')->prefix('books')->group(function () {
-        Route::post('/', [BookController::class, 'store']);
-        Route::put('/{id}', [BookController::class, 'update']);
-        Route::delete('/{id}', [BookController::class, 'destroy']);
-    });
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin/books')->group(function () {
+    Route::post('/', [BookController::class, 'store']);
+    Route::put('/{id}', [BookController::class, 'update']);
+    Route::delete('/{id}', [BookController::class, 'destroy']);
 });

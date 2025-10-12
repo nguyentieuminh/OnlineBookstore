@@ -13,9 +13,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::withRelations()->get()->map(function ($book) {
-            $book->image = $book->image
-                ? url($book->image)
-                : url('/default-book.jpg');
+            $book->image = $book->image ?: '/default-book.jpg';
             return $book;
         });
 
@@ -33,7 +31,7 @@ class BookController extends Controller
             return response()->json(['status' => false, 'message' => 'Book not found'], 404);
         }
 
-        $book->image = $book->image ? url($book->image) : url('/default-book.jpg');
+        $book->image = $book->image ?: '/default-book.jpg';
 
         return response()->json(['status' => true, 'data' => $book]);
     }
@@ -88,7 +86,8 @@ class BookController extends Controller
         }
 
         $book->load('publisher', 'categories', 'tags');
-        $book->image = $book->image ? url($book->image) : url('/default-book.jpg');
+        
+        $book->image = $book->image ?: '/default-book.jpg';
 
         return response()->json([
             'status' => true,
@@ -149,7 +148,8 @@ class BookController extends Controller
         }
 
         $book->load('publisher', 'categories', 'tags');
-        $book->image = $book->image ? url($book->image) : url('/default-book.jpg');
+        
+        $book->image = $book->image ?: '/default-book.jpg';
 
         return response()->json([
             'status' => true,

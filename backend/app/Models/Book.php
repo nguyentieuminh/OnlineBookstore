@@ -12,16 +12,14 @@ class Book extends Model
     protected $primaryKey = 'BookID';
 
     protected $fillable = [
-        'user_id',
-        'address',
-        'recipient_info',
-        'payment_method',
-        'shipping_method',
-        'note',
-        'subtotal',
-        'shipping_fee',
-        'total',
-        'status_id',
+        'BookTitle',
+        'Author',
+        'Describe',
+        'YearOfPublication',
+        'Quantity',
+        'Price',
+        'PublisherID',
+        'image',
     ];
 
     public function publisher()

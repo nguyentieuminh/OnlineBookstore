@@ -1,0 +1,244 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import AdminBookCard from "../components/AdminBookCard.jsx";
+
+export default function AdminBookManagement() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const swiperRefs = useRef({});
+    const [books, setBooks] = useState([]);
+    const [searchTitle, setSearchTitle] = useState("");
+    const [searchAuthor, setSearchAuthor] = useState("");
+    const [searchPublisher, setSearchPublisher] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+
+    const fetchBooks = async () => {
+        try {
+            const res = await fetch("http://localhost:8000/api/books");
+            const data = await res.json();
+            if (data.status && Array.isArray(data.data)) {
+                const formatted = data.data.map((b) => ({
+                    id: b.BookID,
+                    title: b.BookTitle,
+                    author: b.Author,
+                    publisher: b.publisher?.PublisherName || "Unknown",
+                    price: Number(b.Price) || 0,
+                    image: b.image && b.image.trim() !== "" ? b.image : null,
+                    categories: b.categories?.map((c) => c.CategoryName) || [],
+                    tags: b.tags?.map((t) => t.TagName) || [],
+                    description: b.Describe || "",
+                }));
+                setBooks(formatted);
+            }
+        } catch (err) {
+            console.error("Failed to fetch books:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchBooks();
+    }, []);
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchBooks();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
+
+    const filteredBooks = useMemo(() => {
+        const makeRegex = (str) => new RegExp(`\\b${str}`, "i");
+        const titleRegex = searchTitle ? makeRegex(searchTitle) : null;
+        const authorRegex = searchAuthor ? makeRegex(searchAuthor) : null;
+        const publisherRegex = searchPublisher ? makeRegex(searchPublisher) : null;
+
+        return books.filter((book) => {
+            const matchTitle = !titleRegex || titleRegex.test(book.title);
+            const matchAuthor = !authorRegex || authorRegex.test(book.author);
+            const matchPublisher = !publisherRegex || publisherRegex.test(book.publisher);
+            const matchCategory =
+                !selectedCategory || book.categories.includes(selectedCategory);
+            return matchTitle && matchAuthor && matchPublisher && matchCategory;
+        });
+    }, [books, searchTitle, searchAuthor, searchPublisher, selectedCategory]);
+
+    const groupedByTag = useMemo(() => {
+        const map = {};
+        filteredBooks.forEach((book) => {
+            if (!book.tags || book.tags.length === 0) return;
+            book.tags.forEach((tag) => {
+                if (!map[tag]) map[tag] = [];
+                map[tag].push(book);
+            });
+        });
+        return map;
+    }, [filteredBooks]);
+
+    const tagList = useMemo(() => {
+        return Object.keys(groupedByTag)
+            .sort(new Intl.Collator("en").compare)
+            .map((tag, idx) => {
+                let slug = tag
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/(^-|-$)/g, "");
+                if (!slug) slug = `tag-${idx}`;
+                return { tag, slug: `tag-${slug}` };
+            });
+    }, [groupedByTag]);
+
+    useEffect(() => {
+        if (!window.Swiper) return;
+
+        tagList.forEach(({ slug }) => {
+            const container = document.querySelector(`.swiper-${slug}`);
+            const paginationEl = container?.querySelector(`.pagination-${slug}`);
+            if (!container || !paginationEl) return;
+
+            if (swiperRefs.current[slug]?.destroy) {
+                swiperRefs.current[slug].destroy(true, true);
+            }
+
+            swiperRefs.current[slug] = new window.Swiper(container, {
+                slidesPerView: 4,
+                spaceBetween: 20,
+                pagination: { el: paginationEl, clickable: true },
+                grabCursor: true,
+                observer: true,
+                observeParents: true,
+                breakpoints: {
+                    0: { slidesPerView: 1 },
+                    576: { slidesPerView: 2 },
+                    768: { slidesPerView: 3 },
+                    1200: { slidesPerView: 4 },
+                },
+            });
+        });
+
+        return () => {
+            Object.values(swiperRefs.current).forEach((swiper) => {
+                if (swiper?.destroy) swiper.destroy(true, true);
+            });
+            swiperRefs.current = {};
+        };
+    }, [tagList]);
+
+    const handleDelete = async (id) => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`http://localhost:8000/api/admin/books/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Server returned ${res.status}: ${text}`);
+            }
+
+            alert("Book deleted successfully!");
+            fetchBooks();
+        } catch (err) {
+            console.error("Failed to delete book:", err);
+            alert("Failed to delete book. Check console for details.");
+        }
+    };
+
+    const categoryList = useMemo(() => {
+        const setCat = new Set();
+        books.forEach((b) => b.categories.forEach((c) => setCat.add(c)));
+        return Array.from(setCat).sort(new Intl.Collator("en").compare);
+    }, [books]);
+
+    return (
+        <div className="container py-4">
+            <div className="d-flex justify-content-between align-items-center mb-5 mt-3">
+                <h2 className="fw-bold">Book Management</h2>
+                <button
+                    className="btn btn-primary rounded-pill px-4 py-2"
+                    onClick={() => navigate("/admin/book/add")}
+                >
+                    <i className="bi bi-plus-circle me-2"></i>Add New Book
+                </button>
+            </div>
+
+            <div className="row mb-5">
+                <div className="col-md-3 mb-2">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by title..."
+                        value={searchTitle}
+                        onChange={(e) => setSearchTitle(e.target.value)}
+                    />
+                </div>
+                <div className="col-md-3 mb-2">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by author..."
+                        value={searchAuthor}
+                        onChange={(e) => setSearchAuthor(e.target.value)}
+                    />
+                </div>
+                <div className="col-md-3 mb-2">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by publisher..."
+                        value={searchPublisher}
+                        onChange={(e) => setSearchPublisher(e.target.value)}
+                    />
+                </div>
+                <div className="col-md-3 mb-2">
+                    <select
+                        className="form-select"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        <option value="">All Categories</option>
+                        {categoryList.map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {tagList.length === 0 && (
+                <div className="container" style={{ height: "155px" }}>
+                    <p className="text-center fs-3">No books found.</p>
+                </div>
+            )}
+
+            {tagList.map(({ tag, slug }) => (
+                <section key={slug} className="mb-5 text-center">
+                    <h2 className="fw-semibold mb-2">{tag}</h2>
+
+                    <div className={`swiper swiper-${slug}`}>
+                        <div className="swiper-wrapper">
+                            {groupedByTag[tag].map((book) => (
+                                <div className="swiper-slide" key={book.id}>
+                                    <AdminBookCard
+                                        {...book}
+                                        onEdit={(id) => navigate(`/admin/book/edit/${id}`)}
+                                        onDelete={handleDelete}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div
+                            className={`pagination-${slug} mb-3 d-flex justify-content-center`}
+                        ></div>
+                    </div>
+                </section>
+            ))}
+        </div>
+    );
+}
