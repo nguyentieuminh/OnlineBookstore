@@ -41,15 +41,15 @@ body {
 }
 
 .custom-tab-button-modern:hover {
-    color: #36B0C2;
-    border-bottom-color: #36B0C2;
+    color: #6366F1;
+    border-bottom-color: #6366F1;
     transform: translateY(-2px);
 }
 
 .custom-tab-button-modern.active {
-    color: #36B0C2;
+    color: #6366F1;
     font-weight: 600;
-    border-bottom-color: #36B0C2;
+    border-bottom-color: #6366F1;
     background-color: transparent !important;
     transform: translateY(0);
 }

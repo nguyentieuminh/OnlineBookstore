@@ -4,7 +4,7 @@ import { apiGet, placeOrder, clearCart } from '../../api';
 import { Book } from "lucide-react";
 import { toast } from 'react-toastify';
 
-export default function OrderForm({ setOrders }) {
+export default function OrderForm({ setOrders, setItems }) {
   const navigate = useNavigate();
   const { state } = useLocation();
   const items = state?.items || [];
@@ -96,7 +96,7 @@ export default function OrderForm({ setOrders }) {
     const fetchAllBooks = async () => {
       try {
         const booksData = await apiGet('books');
-        setAllBooks(booksData);
+        setAllBooks(Array.isArray(booksData) ? booksData : booksData.data || []);
       } catch (error) {
         console.error("Failed to fetch books list:", error);
         toast.error("Could not load book data. Please refresh the page");
@@ -197,85 +197,93 @@ export default function OrderForm({ setOrders }) {
 
   const payableTotal = React.useMemo(() => itemsSubtotal + shippingFee, [itemsSubtotal, shippingFee]);
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('token');
-
     setPlaceOrderAttempt(prev => prev + 1);
 
     if (!token) {
       toast.error("You must be logged in to place an order. Redirecting to login...");
-      setTimeout(() => {
-        navigate('/login', { state: { from: location } });
-      }, 2000);
+      setTimeout(() => navigate('/login', { state: { from: location } }), 1500);
       return;
     }
 
     if (isEditing || !address.trim()) {
-      toast.error('Please confirm the address before placing the order.');
-      if (placeOrderAttempt > 0) {
-        addressSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }
+      toast.error('Please confirm your address before placing the order.');
+      addressSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
     const recipientErrs = validateRecipientFields(recipient);
-
     if (isEditingRecipient || Object.values(recipientErrs).some(Boolean)) {
-      toast.error('Please confirm recipient information before placing the order.');
+      toast.error('Please confirm recipient info before placing the order.');
       setRecipientErrors(recipientErrs);
-      if (placeOrderAttempt > 0) {
-        recipientSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }
+      recipientSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
-    if (allBooks.length === 0) {
-      toast.error("Book data is not loaded yet. Please wait a moment and try again.");
-      return;
-    }
-
-    const itemsWithId = items.map(cartItem => {
-      const bookFromDb = allBooks.find(book => book.name === cartItem.name);
-      return {
-        book_id: bookFromDb ? bookFromDb.id : null,
-        quantity: cartItem.quantity
-      };
-    });
-
-    if (itemsWithId.some(item => !item.book_id)) {
-      toast.error("Some items could not be found. Please check your cart.");
+    if (!Array.isArray(items) || items.length === 0) {
+      toast.error("No items to order.");
       return;
     }
 
     setIsPlacingOrder(true);
+
     try {
       const orderData = {
-        items: itemsWithId,
         address,
         recipient,
         payment_method: paymentMethod,
         shipping_method: shippingMethod,
         note: customerNote,
+        shipping_fee: shippingFee,
+        subtotal: itemsSubtotal,
+        total: payableTotal,
+        items: items.map(it => ({
+          book_id: it.BookID || it.id,
+          quantity: it.Quantity || it.quantity || 1,
+        })),
       };
+
+      console.log("Sending order data:", orderData);
 
       const result = await placeOrder(orderData);
 
       try {
         await clearCart();
         localStorage.removeItem('cartItems');
-        console.log("🧹 Cart cleared successfully after checkout");
+        if (typeof setItems === "function") setItems([]);
+        console.log("Cart cleared successfully");
       } catch (clearErr) {
-        console.error("⚠ Failed to clear cart:", clearErr);
+        console.warn("Failed to clear cart:", clearErr);
       }
 
-      localStorage.setItem('order_address', address);
-      localStorage.setItem('order_recipient', JSON.stringify(recipient));
-      localStorage.setItem('order_payment_method', paymentMethod);
+      const now = new Date().toISOString();
+      const newOrder = {
+        id: now,
+        items,
+        status_ref: { label: "Pending Confirmation", color: "#6c757d", code: "pending" },
+        order_date: now,
+        total: items.reduce((s, it) => s + (it.price || 0) * (it.quantity || 1), 0),
+        discount_total: 0,
+        address,
+        recipient_info: recipient,
+        note: customerNote,
+      };
 
-      toast.success(result.message || 'Order placed successfully!');
-      navigate('/orders');
+      setOrders(prev => {
+        const next = [...prev, newOrder];
+        localStorage.setItem('bookstore-orders', JSON.stringify(next));
+        return next;
+      });
+
+      toast.success(result?.message || "Order placed successfully!");
+
+      setTimeout(() => navigate('/orders'), 1000);
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message || 'Failed to place order.');
+      console.error("Place order failed:", error);
+      const msg = error?.response?.message || error?.message || 'Failed to place order.';
+      toast.error(msg);
     } finally {
       setIsPlacingOrder(false);
     }

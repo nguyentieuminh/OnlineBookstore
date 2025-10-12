@@ -106,9 +106,9 @@ export const updateCartItem = (id, quantity) =>
 export const removeCartItem = (id) => apiDelete(`cart/remove/${id}`);
 export const clearCart = () => apiDelete("cart/clear");
 
-export const placeOrder = (orderData) => apiPost("orders/place", orderData);
+export const placeOrder = (orderData) => apiPost("orders", orderData);
 export const getUserOrders = () => apiGet("orders");
-export const cancelOrder = (orderId) => apiPatch(`orders/${orderId}/cancel`);
+export const cancelOrder = (orderId) => apiPost(`orders/${orderId}/cancel`);
 
 export const getAdminDashboard = () => apiGet("admin/dashboard");
 export const getAdminOrders = () => apiGet("admin/orders");

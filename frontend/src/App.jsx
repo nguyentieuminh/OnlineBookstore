@@ -181,7 +181,7 @@ function App() {
           }
         />
 
-        <Route path="/orderform" element={<OrderForm />} />
+        <Route path="/orderform" element={<OrderForm setOrders={setOrders} setItems={setCartItems} />} />
 
         <Route
           path="/orders"

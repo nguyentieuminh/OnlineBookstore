@@ -30,10 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/clear', [CartController::class, 'clear']);
     });
 
-    Route::prefix('orders')->group(function () {
-        Route::get('/', [OrderController::class, 'index']);
-        Route::post('/place', [OrderController::class, 'store']);
-        Route::patch('/{id}/cancel', [OrderController::class, 'cancel']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::post('/orders', [OrderController::class, 'store']);
+        Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
     });
 
     Route::middleware('admin')->prefix('books')->group(function () {
