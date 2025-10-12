@@ -165,9 +165,25 @@ export default function BookDetail({
     const handleBuyNow = () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/login");
+            navigate("/login", { state: { from: `/book/${id}` } });
             return;
         }
+
+        if (!book) return;
+
+        const orderItem = {
+            id: book.id,
+            BookID: book.id,
+            title: book.title,
+            author: book.author,
+            publisher: book.publisher,
+            price: book.price,
+            quantity,
+            image: book.image,
+            categories: book.categories,
+        };
+
+        navigate("/orderform", { state: { items: [orderItem] } });
     };
 
     const handleQuantityChange = (newQty) => {
