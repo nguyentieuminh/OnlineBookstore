@@ -13,8 +13,9 @@ const AdminBookCard = ({
     categories = [],
     tags = [],
     onEdit,
-    onDelete,
+    onDeleteRequest,
 }) => {
+
     const [showRemove, setShowRemove] = useState(false);
 
     const bookImage = image && image.trim() !== "" ? image : "/images/default-book.jpg";
@@ -146,7 +147,7 @@ const AdminBookCard = ({
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                setShowRemove(true);
+                                onDeleteRequest(id, title);
                             }}
                             style={{
                                 width: "40px",
@@ -169,38 +170,6 @@ const AdminBookCard = ({
                     </div>
                 </div>
             </div>
-
-            {showRemove && (
-                <div className="popup-overlay">
-                    <div
-                        className="popup-box shadow-lg bg-white rounded-4 p-4 text-center"
-                        style={{ maxWidth: "400px" }}
-                    >
-                        <h5 className="fw-bold mb-2">Delete Book?</h5>
-                        <p className="text-muted small mb-4">
-                            Are you sure you want to remove{" "}
-                            <strong>{title}</strong>?
-                        </p>
-                        <div className="d-flex justify-content-center gap-3">
-                            <button
-                                onClick={() => {
-                                    setShowRemove(false);
-                                    onDelete(id);
-                                }}
-                                className="btn btn-danger rounded-pill px-4 fw-semibold"
-                            >
-                                Yes, Delete
-                            </button>
-                            <button
-                                onClick={() => setShowRemove(false)}
-                                className="btn btn-outline-secondary rounded-pill px-4 fw-semibold"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </>
     );
 };

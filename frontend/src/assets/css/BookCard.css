@@ -42,3 +42,7 @@
         transform: translateY(-10px);
     }
 }
+
+.popup-overlay {
+    background-color: transparent !important;
+}

@@ -12,6 +12,7 @@ export default function AdminBookManagement() {
     const [searchAuthor, setSearchAuthor] = useState("");
     const [searchPublisher, setSearchPublisher] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [deleteBook, setDeleteBook] = useState(null);
 
     const fetchBooks = async () => {
         try {
@@ -228,7 +229,7 @@ export default function AdminBookManagement() {
                                     <AdminBookCard
                                         {...book}
                                         onEdit={(id) => navigate(`/admin/book/edit/${id}`)}
-                                        onDelete={handleDelete}
+                                        onDeleteRequest={(id, title) => setDeleteBook({ id, title })}
                                     />
                                 </div>
                             ))}
@@ -239,6 +240,34 @@ export default function AdminBookManagement() {
                     </div>
                 </section>
             ))}
+
+            {deleteBook && (
+                <div className="popup-overlay">
+                    <div className="popup-box shadow-lg bg-white rounded-4 p-4 text-center" style={{ maxWidth: "400px" }}>
+                        <h5 className="fw-bold mb-2">Delete Book?</h5>
+                        <p className="text-muted small mb-4">
+                            Are you sure you want to remove <strong>{deleteBook.title}</strong>?
+                        </p>
+                        <div className="d-flex justify-content-center gap-3">
+                            <button
+                                onClick={() => {
+                                    handleDelete(deleteBook.id);
+                                    setDeleteBook(null);
+                                }}
+                                className="btn btn-danger rounded-pill px-4 fw-semibold"
+                            >
+                                Yes, Delete
+                            </button>
+                            <button
+                                onClick={() => setDeleteBook(null)}
+                                className="btn btn-outline-secondary rounded-pill px-4 fw-semibold"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
