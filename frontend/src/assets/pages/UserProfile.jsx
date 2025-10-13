@@ -88,7 +88,10 @@ export default function UserProfile() {
 
             const updated = await res.json();
 
+            const oldUser = JSON.parse(localStorage.getItem("user")) || {};
+
             const updatedUser = {
+                ...oldUser,
                 name: updated.name || "",
                 email: updated.email || "",
                 phone: updated.phone || "",
@@ -102,9 +105,16 @@ export default function UserProfile() {
             setUser(updatedUser);
             setOriginalUser(updatedUser);
 
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+
             setIsChangingPassword(false);
             alert("Profile updated successfully!");
-            navigate("/");
+
+            if (updatedUser.Role === "admin") {
+                navigate("/admin/books");
+            } else {
+                navigate("/");
+            }
         } catch (err) {
             console.error("Error updating profile:", err);
             alert(err.message || "Update failed!");

@@ -9,7 +9,6 @@ use App\Models\Tag;
 use App\Models\Publisher;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
