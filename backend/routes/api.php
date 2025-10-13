@@ -62,4 +62,6 @@ Route::middleware(['auth:sanctum', CheckRole::class . ':admin'])
             Route::get('/', [OrderController::class, 'indexAdmin']);
             Route::put('/{id}', [OrderController::class, 'updateStatus']);
         });
+
+        Route::get('/feedbacks', [ReviewController::class, 'adminIndex']);
     });

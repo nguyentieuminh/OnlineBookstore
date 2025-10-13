@@ -57,4 +57,19 @@ class ReviewController extends Controller
         $review->delete();
         return response()->json(['status' => true, 'message' => 'Review deleted']);
     }
+
+    public function adminIndex()
+    {
+        $feedbacks = Review::with([
+            'user:UserID,Name,Email,PhoneNumber',
+            'book:BookID,BookTitle'
+        ])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $feedbacks
+        ]);
+    }
 }
