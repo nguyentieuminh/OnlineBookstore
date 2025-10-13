@@ -3,57 +3,55 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('Email', 'Password');
-        $user = User::where('Email', $credentials['Email'])->first();
+        $request->validate([
+            'Email' => 'required|email',
+            'Password' => 'required|string|min:6',
+        ]);
 
-        if (!$user || !Hash::check($credentials['Password'], $user->Password)) {
+        $user = User::where('Email', $request->Email)->first();
+
+        if (!$user || !Hash::check($request->Password, $user->Password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        if (!$user->is_active) {
+            return response()->json([
+                'message' => 'Your account has been deactivated. Please contact the administrator.'
+            ], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Login successful',
             'token' => $token,
-            'user' => [
-                'UserID' => $user->UserID,
-                'Name' => $user->Name,
-                'Email' => $user->Email,
-                'Role' => $user->Role,
-            ]
+            'user' => $user,
         ]);
     }
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'Name' => 'required|string|max:255',
             'Email' => 'required|email|unique:users,Email',
-            'Password' => 'required|string|min:6',
-            'DateOfBirth' => 'nullable|date',
+            'Password' => 'required|string|min:6|confirmed',
+            'DateOfBirth' => 'required|date',
         ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
 
         $user = User::create([
             'Name' => $request->Name,
             'Email' => $request->Email,
-            'Password' => Hash::make($request->Password),
+            'Password' => bcrypt($request->Password),
             'DateOfBirth' => $request->DateOfBirth,
             'Role' => 'customer',
+            'is_active' => true,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -61,19 +59,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'User registered successfully',
             'token' => $token,
-            'user' => [
-                'UserID' => $user->UserID,
-                'Name' => $user->Name,
-                'Email' => $user->Email,
-                'Role' => $user->Role,
-            ]
+            'user' => $user,
         ], 201);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Logged out successfully']);
     }
 }

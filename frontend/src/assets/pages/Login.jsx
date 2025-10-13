@@ -68,6 +68,8 @@ function Login() {
                 }
 
                 setShowSuccess(true);
+            } else if (response.status === 403) {
+                setError("Your account has been deactivated. Please contact the administrator.");
             } else {
                 setShowFailed(true);
             }

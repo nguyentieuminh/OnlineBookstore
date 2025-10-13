@@ -19,6 +19,7 @@ import AdminOrders from "./assets/pages/AdminOrders.jsx";
 import AdminBookManagement from "./assets/pages/AdminBookManagement.jsx";
 import AdminAddNewBook from "./assets/pages/AdminAddNewBook.jsx";
 import AdminFeedback from "./assets/pages/AdminFeedback.jsx";
+import AdminUserManagement from "./assets/pages/AdminUserManagement.jsx"
 
 import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
 
@@ -251,6 +252,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminFeedback />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminUserManagement />
             </ProtectedRoute>
           }
         />

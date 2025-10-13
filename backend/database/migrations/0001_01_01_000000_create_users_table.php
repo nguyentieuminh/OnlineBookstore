@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('DateOfBirth')->nullable();
             $table->string('Role')->default('customer'); 
             $table->timestamps();
+            $table->boolean('is_active')->default(true);
         });
     }
 

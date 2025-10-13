@@ -8,6 +8,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminUserController;
 
 use App\Http\Middleware\CheckRole;
 
@@ -51,6 +52,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum', CheckRole::class . ':admin'])
     ->prefix('admin')
     ->group(function () {
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::patch('/users/{id}/toggle', [AdminUserController::class, 'toggleActive']);
+        Route::patch('/users/{id}/make-admin', [AdminUserController::class, 'makeAdmin']);
+        Route::delete('/users/{id}', [AdminUserController::class, 'destroy']);
+
         Route::prefix('books')->group(function () {
             Route::get('/', [BookController::class, 'index']);
             Route::post('/', [BookController::class, 'store']);

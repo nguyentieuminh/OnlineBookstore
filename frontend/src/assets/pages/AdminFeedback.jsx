@@ -7,12 +7,24 @@ const AdminFeedback = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchBook, setSearchBook] = useState("");
+  const [searchUser, setSearchUser] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
         const data = await apiGet("admin/feedbacks");
-        setFeedbacks(data.data || []);
+        let all = data.data || [];
+
+        const filter = localStorage.getItem("feedbackUserFilter");
+        if (filter) {
+          const userFilter = JSON.parse(filter);
+          setSearchUser(userFilter.name || "");
+          setSearchEmail(userFilter.email || "");
+          localStorage.removeItem("feedbackUserFilter");
+        }
+
+        setFeedbacks(all);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -24,20 +36,22 @@ const AdminFeedback = () => {
   }, []);
 
   const filteredFeedbacks = useMemo(() => {
-    if (!searchBook) return feedbacks;
-
-    const words = searchBook
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .map(word => new RegExp(word, "i"));
-
     return feedbacks.filter(f => {
-      if (!f.book?.BookTitle) return false;
+      const matchBook = searchBook
+        ? f.book?.BookTitle?.toLowerCase().includes(searchBook.toLowerCase())
+        : true;
 
-      return words.every(regex => regex.test(f.book.BookTitle));
+      const matchUser = searchUser
+        ? f.user?.Name?.toLowerCase().includes(searchUser.toLowerCase())
+        : true;
+
+      const matchEmail = searchEmail
+        ? f.user?.Email?.toLowerCase().includes(searchEmail.toLowerCase())
+        : true;
+
+      return matchBook && matchUser && matchEmail;
     });
-  }, [feedbacks, searchBook]);
+  }, [feedbacks, searchBook, searchUser, searchEmail]);
 
   if (loading) return <div className="admin-message-container"><p>⏳ Loading data...</p></div>;
   if (error) return <div className="admin-message-container"><p className="error">⚠ Error: {error}</p></div>;
@@ -46,14 +60,34 @@ const AdminFeedback = () => {
     <div className="admin-message-container">
       <h2 className="mb-4">📩 Customer Feedback</h2>
 
-      <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search by book title..."
-          value={searchBook}
-          onChange={(e) => setSearchBook(e.target.value)}
-        />
+      <div className="mb-3 row g-2">
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by book title..."
+            value={searchBook}
+            onChange={(e) => setSearchBook(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by user name..."
+            value={searchUser}
+            onChange={(e) => setSearchUser(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by user email..."
+            value={searchEmail}
+            onChange={(e) => setSearchEmail(e.target.value)}
+          />
+        </div>
       </div>
 
       {filteredFeedbacks.length > 0 ? (

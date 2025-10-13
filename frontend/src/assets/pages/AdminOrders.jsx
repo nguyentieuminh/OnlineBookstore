@@ -119,20 +119,6 @@ export default function AdminOrders() {
             <div className="p-3 mb-4 bg-light rounded shadow-sm">
                 <div className="row g-3 align-items-end">
                     <div className="col-md-6">
-                        <p className="form-label">Order Date</p>
-                        <DatePicker
-                            className="form-control rounded-4"
-                            selected={filterDate}
-                            onChange={(date) => {
-                                setFilterDate(date);
-                                setPage(1);
-                            }}
-                            dateFormat="dd-MM-yyyy"
-                            placeholderText="Select a date"
-                            isClearable
-                        />
-                    </div>
-                    <div className="col-md-6">
                         <p className="form-label">Order Status</p>
                         <select
                             className="form-select rounded-4"
@@ -148,6 +134,21 @@ export default function AdminOrders() {
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="col-md-6">
+                        <p className="form-label">Order Date</p>
+                        <DatePicker
+                            className="form-control rounded-4"
+                            selected={filterDate}
+                            onChange={(date) => {
+                                setFilterDate(date);
+                                setPage(1);
+                            }}
+                            dateFormat="dd-MM-yyyy"
+                            placeholderText="Select a date"
+                            isClearable
+                        />
                     </div>
                 </div>
             </div>

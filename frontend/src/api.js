@@ -1,114 +1,86 @@
 const BASE_URL = "http://localhost:8000/api";
 
+let isLoggingOut = false;
+
+const handleUnauthorized = () => {
+    if (!localStorage.getItem("token")) return;
+    if (isLoggingOut) return;
+
+    isLoggingOut = true;
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    alert("Your session has expired or your admin privileges were revoked.");
+
+    window.location.replace("/login");
+};
+
 const getHeaders = () => {
     const token = localStorage.getItem("token");
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
     };
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-    }
+    if (token) headers["Authorization"] = `Bearer ${token}`;
     return headers;
 };
 
-export const apiGet = async (url) => {
-    const response = await fetch(`${BASE_URL}/${url}`, {
-        headers: getHeaders(),
-    });
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Request failed");
+const parseResponse = async (response) => {
+    const text = await response.text();
+    try {
+        return text ? JSON.parse(text) : {};
+    } catch {
+        return text;
     }
-    return await response.json();
 };
 
-export const apiPost = async (url, body) => {
-    const headers = getHeaders();
-    const token = localStorage.getItem("token");
+const handleResponse = async (response) => {
+    if (response.status === 401) return handleUnauthorized();
+    if (response.status === 403) {
+        const err = await parseResponse(response);
+        throw new Error(err.message || "Access denied.");
+    }
 
-    console.log(`[API Auth] Using token: ${token ? "Bearer " + token.substring(0, 20) + "..." : "No Token Found"
-        }`);
-    console.log(`[API POST] to ${url} with body:`, JSON.stringify(body, null, 2));
+    if (!response.ok) {
+        const err = await parseResponse(response);
+        throw new Error(err.message || "Request failed");
+    }
 
-    const response = await fetch(`${BASE_URL}/${url}`, {
+    return await parseResponse(response);
+};
+
+export const apiGet = (url) =>
+    fetch(`${BASE_URL}/${url}`, { headers: getHeaders() }).then(handleResponse);
+
+export const apiPost = (url, body) =>
+    fetch(`${BASE_URL}/${url}`, {
         method: "POST",
-        headers,
+        headers: getHeaders(),
         body: JSON.stringify(body),
-    });
+    }).then(handleResponse);
 
-    if (!response.ok) {
-        const error = await response.json();
-        console.error(`[API POST ERROR] to ${url}:`, error);
-        if (error.errors) {
-            console.error("Validation errors:", error.errors);
-        }
-        const err = new Error(error.message || "Request failed");
-        err.response = error;
-        throw err;
-    }
-
-    return await response.json();
-};
-
-export const apiPut = async (url, body) => {
-    const response = await fetch(`${BASE_URL}/${url}`, {
+export const apiPut = (url, body) =>
+    fetch(`${BASE_URL}/${url}`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(body),
-    });
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Request failed");
-    }
-    return await response.json();
-};
+    }).then(handleResponse);
 
-export const apiPatch = async (url, body) => {
-    const response = await fetch(`${BASE_URL}/${url}`, {
+export const apiPatch = (url, body) =>
+    fetch(`${BASE_URL}/${url}`, {
         method: "PATCH",
         headers: getHeaders(),
         body: JSON.stringify(body),
-    });
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Request failed");
-    }
-    return await response.json();
-};
+    }).then(handleResponse);
 
-export const apiDelete = async (url) => {
-    const headers = getHeaders();
-    console.log(`[API DELETE] URL: ${BASE_URL}/${url}`);
-    console.log(`[API DELETE] Headers:`, headers);
-
-    const response = await fetch(`${BASE_URL}/${url}`, {
+export const apiDelete = (url) =>
+    fetch(`${BASE_URL}/${url}`, {
         method: "DELETE",
-        headers,
-    });
-
-    const text = await response.text();
-    let data;
-    try {
-        data = text ? JSON.parse(text) : {};
-    } catch {
-        data = text;
-    }
-
-    if (!response.ok) {
-        console.error(`[API DELETE ERROR] URL: ${url}`, data);
-        const message = data?.message || data || "Request failed";
-        const err = new Error(message);
-        err.response = data;
-        throw err;
-    }
-
-    console.log(`[API DELETE SUCCESS] URL: ${url}`, data);
-    return data;
-};
+        headers: getHeaders(),
+    }).then(handleResponse);
 
 export const getBooks = () => apiGet("books");
-
 export const getBookDetail = (id) => apiGet(`books/${id}`);
 
 export const getAdminBooks = () => apiGet("admin/books");

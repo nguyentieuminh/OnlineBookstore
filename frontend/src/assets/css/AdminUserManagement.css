@@ -1,0 +1,59 @@
+.admin-user-popup {
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.admin-user-actions .action-text {
+    cursor: pointer;
+    border: none !important;
+    background: transparent !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-user-actions .action-text:hover {
+    text-decoration: underline;
+    opacity: 0.9;
+}
+
+.text-success {
+    color: #10b981 !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.text-primary {
+    color: #0d6efd !important;
+}
+
+.admin-user-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+.admin-user-actions .text-warning {
+    color: #f59e0b !important;
+}
+
+.admin-user-actions .text-warning:hover {
+    text-decoration: underline;
+    opacity: 0.9;
+}
