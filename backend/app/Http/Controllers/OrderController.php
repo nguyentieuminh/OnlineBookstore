@@ -116,4 +116,35 @@ class OrderController extends Controller
 
         return response()->json(['message' => "Đơn hàng $id đã bị hủy"], 200);
     }
+
+    public function indexAdmin()
+    {
+        $orders = Orders::with(['items.book', 'status'])->orderBy('created_at', 'desc')->get();
+        return response()->json($orders, 200);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $order = Orders::findOrFail($id);
+
+        $newStatus = OrderStatus::where('label', $request->status)
+            ->orWhere('code', $request->status)
+            ->first();
+
+        if (!$newStatus) {
+            return response()->json(['message' => 'Invalid status value'], 400);
+        }
+
+        $order->status_id = $newStatus->id;
+        $order->save();
+
+        return response()->json(
+            $order->load('status', 'items.book.publisher', 'items.book.categories'),
+            200
+        );
+    }
 }

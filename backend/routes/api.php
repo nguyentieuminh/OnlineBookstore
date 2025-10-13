@@ -29,9 +29,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/', [CartController::class, 'store']);
+        Route::delete('/clear', [CartController::class, 'clear']);
         Route::put('/{id}', [CartController::class, 'update']);
         Route::delete('/{id}', [CartController::class, 'destroy']);
-        Route::delete('/clear', [CartController::class, 'clear']);
     });
 
     Route::prefix('orders')->group(function () {
@@ -56,5 +56,10 @@ Route::middleware(['auth:sanctum', CheckRole::class . ':admin'])
             Route::post('/', [BookController::class, 'store']);
             Route::put('/{id}', [BookController::class, 'update']);
             Route::delete('/{id}', [BookController::class, 'destroy']);
+        });
+
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'indexAdmin']);
+            Route::put('/{id}', [OrderController::class, 'updateStatus']);
         });
     });

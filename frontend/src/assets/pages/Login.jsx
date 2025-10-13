@@ -62,7 +62,7 @@ function Login() {
                 localStorage.setItem('user', JSON.stringify(data.user));
 
                 if (data.user.Role === 'admin') {
-                    navigate('/admin/books');
+                    navigate('/admin/orders');
                 } else {
                     navigate('/');
                 }

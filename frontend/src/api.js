@@ -118,10 +118,10 @@ export const deleteBook = (id) => apiDelete(`admin/books/${id}`);
 
 export const getCart = () => apiGet("cart");
 export const addToCart = (bookId, quantity = 1) =>
-    apiPost("cart/add", { BookID: bookId, Quantity: quantity });
+    apiPost("cart", { BookID: bookId, Quantity: quantity });
 export const updateCartItem = (id, quantity) =>
-    apiPut(`cart/update/${id}`, { Quantity: quantity });
-export const removeCartItem = (id) => apiDelete(`cart/remove/${id}`);
+    apiPut(`cart/${id}`, { Quantity: quantity });
+export const removeCartItem = (id) => apiDelete(`cart/${id}`);
 export const clearCart = () => apiDelete("cart/clear");
 
 export const placeOrder = (orderData) => apiPost("orders", orderData);

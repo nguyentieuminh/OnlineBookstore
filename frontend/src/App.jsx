@@ -15,6 +15,7 @@ import Orders from "./assets/pages/Orders.jsx";
 import OrderForm from "./assets/pages/OrderForm.jsx";
 import ProtectedRoute from "./assets/components/ProtectedRoute.jsx";
 import AdminHeader from "./assets/components/AdminHeader.jsx";
+import AdminOrders from "./assets/pages/AdminOrders.jsx";
 import AdminBookManagement from "./assets/pages/AdminBookManagement.jsx";
 import AdminAddNewBook from "./assets/pages/AdminAddNewBook.jsx";
 
@@ -46,7 +47,7 @@ function App() {
 
   const addToCart = async (book) => {
     try {
-      await apiPost("cart/add", {
+      await apiPost("cart", {
         BookID: book.id || book.BookID,
         Quantity: book.quantity || 1,
       });
@@ -58,7 +59,7 @@ function App() {
 
   const updateQuantity = async (id, newQuantity) => {
     try {
-      await apiPut(`cart/update/${id}`, { Quantity: newQuantity });
+      await apiPut(`cart/${id}`, { Quantity: newQuantity });
       fetchCart();
     } catch (err) {
       console.error("Lỗi cập nhật số lượng:", err);
@@ -67,7 +68,7 @@ function App() {
 
   const removeFromCart = async (id) => {
     try {
-      await apiDelete(`cart/remove/${id}`);
+      await apiDelete(`cart/${id}`);
       fetchCart();
     } catch (err) {
       console.error("Lỗi xóa giỏ hàng:", err);
@@ -207,6 +208,15 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminOrders />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/books"

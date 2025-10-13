@@ -13,6 +13,9 @@ npm install react-toastify
 - Cài thư viện react-select (frontend)
 npm install react-select
 
+- Cài thư viện lịch
+npm install react-datepicker date-fns (frontend)
+
 - Copy .env và sửa lại DB   (backend)
 WINDOW:           copy .env.example .env
 LINUX | UBUNTU:   cp .env.example .env
