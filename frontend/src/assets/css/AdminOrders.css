@@ -87,7 +87,7 @@
 
 .pagination .page-item .page-link:hover,
 .pagination .page-item.active .page-link {
-    color: #0DCAF0 !important;
+    color: #6366F1 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -109,7 +109,7 @@
 
 .pagination .page-item:first-child .page-link:hover,
 .pagination .page-item:last-child .page-link:hover {
-    color: #0DCAF0 !important;
+    color: #6366F1 !important;
     cursor: pointer;
 }
 
