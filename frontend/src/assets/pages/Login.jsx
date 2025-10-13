@@ -59,11 +59,10 @@ function Login() {
 
             if (response.ok) {
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('role', data.user.Role);
-                localStorage.setItem('userName', data.user.Name);
+                localStorage.setItem('user', JSON.stringify(data.user));
 
                 if (data.user.Role === 'admin') {
-                    navigate('/admin/dashboard');
+                    navigate('/admin/books');
                 } else {
                     navigate('/');
                 }

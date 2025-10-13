@@ -10,6 +10,9 @@ npm install lucide-react
 - Cài thư viện toastify (frontend)
 npm install react-toastify
 
+- Cài thư viện react-select (frontend)
+npm install react-select
+
 - Copy .env và sửa lại DB   (backend)
 WINDOW:           copy .env.example .env
 LINUX | UBUNTU:   cp .env.example .env

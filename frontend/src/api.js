@@ -78,15 +78,33 @@ export const apiPatch = async (url, body) => {
 };
 
 export const apiDelete = async (url) => {
+    const headers = getHeaders();
+    console.log(`[API DELETE] URL: ${BASE_URL}/${url}`);
+    console.log(`[API DELETE] Headers:`, headers);
+
     const response = await fetch(`${BASE_URL}/${url}`, {
         method: "DELETE",
-        headers: getHeaders(),
+        headers,
     });
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Request failed");
+
+    const text = await response.text();
+    let data;
+    try {
+        data = text ? JSON.parse(text) : {};
+    } catch {
+        data = text;
     }
-    return await response.json();
+
+    if (!response.ok) {
+        console.error(`[API DELETE ERROR] URL: ${url}`, data);
+        const message = data?.message || data || "Request failed";
+        const err = new Error(message);
+        err.response = data;
+        throw err;
+    }
+
+    console.log(`[API DELETE SUCCESS] URL: ${url}`, data);
+    return data;
 };
 
 export const getBooks = () => apiGet("books");

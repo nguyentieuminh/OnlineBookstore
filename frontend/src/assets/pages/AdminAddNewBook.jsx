@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 
 export default function AdminAddNewBook() {
     const { id } = useParams();
     const isEditing = Boolean(id);
     const navigate = useNavigate();
 
+    const categoryOptions = [
+        "Cuisine", "Detective Fiction", "Thriller", "Literature", "History", "Design",
+        "Technology", "Science", "Psychology", "Self-Help", "Astronomy", "Economics",
+        "Business", "Children's Literature", "Physics", "Romance", "Historical Fiction",
+        "Strategy", "Skill Development", "Fantasy", "Science Fiction", "Mystery",
+        "Philosophy", "Current Events"
+    ].map((c) => ({ value: c, label: c }));
+
+    const tagOptions = [
+        "Our Suggestion",
+        "New Releases",
+        "Best Seller",
+        "Most Popular Books",
+        "Top Rated Books"
+    ].map((t) => ({ value: t, label: t }));
+
     const [book, setBook] = useState({
         BookTitle: "",
         Author: "",
-        PublisherID: "",
+        Publisher: "",
         YearOfPublication: "",
         Price: "",
         Quantity: "",
@@ -17,78 +34,116 @@ export default function AdminAddNewBook() {
         image: "",
     });
 
-    const [publishers, setPublishers] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [selectedCats, setSelectedCats] = useState([]);
-
-    useEffect(() => {
-        fetch("http://localhost:8000/api/publishers")
-            .then(res => res.json())
-            .then(data => setPublishers(data.data || []))
-            .catch(console.error);
-
-        fetch("http://localhost:8000/api/categories")
-            .then(res => res.json())
-            .then(data => setCategories(data.data || []))
-            .catch(console.error);
-    }, []);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (isEditing) {
             fetch(`http://localhost:8000/api/books/${id}`)
-                .then(res => res.json())
-                .then(data => {
+                .then((res) => res.json())
+                .then((data) => {
                     if (data.status) {
                         const b = data.data;
                         setBook({
-                            BookTitle: b.BookTitle,
-                            Author: b.Author,
-                            PublisherID: b.publisher?.PublisherID || "",
+                            BookTitle: b.BookTitle || "",
+                            Author: b.Author || "",
+                            Publisher: b.publisher?.PublisherName || "",
                             YearOfPublication: b.YearOfPublication || "",
                             Price: b.Price || "",
                             Quantity: b.Quantity || "",
                             Describe: b.Describe || "",
                             image: b.image || "",
                         });
-                        setSelectedCats(b.categories?.map(c => c.CategoryID) || []);
+                        setSelectedCats(
+                            b.categories?.map((c) => ({ value: c.CategoryName, label: c.CategoryName })) || []
+                        );
+                        setSelectedTags(
+                            b.tags?.map((t) => ({ value: t.TagName, label: t.TagName })) || []
+                        );
                     }
                 })
                 .catch(console.error);
         }
     }, [id]);
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        setBook(prev => ({ ...prev, [name]: value }));
+        setBook((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleCategoryToggle = id => {
-        setSelectedCats(prev =>
-            prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-        );
+    const validateForm = () => {
+        const newErrors = {};
+        const currentYear = new Date().getFullYear();
+
+        if (!book.BookTitle.trim()) newErrors.BookTitle = "Title is required.";
+        if (!book.Author.trim()) newErrors.Author = "Author is required.";
+        if (!book.Publisher.trim()) newErrors.Publisher = "Publisher is required.";
+
+        if (!book.YearOfPublication) newErrors.YearOfPublication = "Year is required.";
+        else if (book.YearOfPublication < 0 || book.YearOfPublication > currentYear)
+            newErrors.YearOfPublication = `Year must be between 0 and ${currentYear}.`;
+
+        if (book.Price === "" || isNaN(book.Price) || book.Price < 0)
+            newErrors.Price = "Price must be a positive number.";
+
+        if (book.Quantity === "" || isNaN(book.Quantity) || book.Quantity < 0)
+            newErrors.Quantity = "Quantity must be a positive number.";
+
+        if (selectedCats.length === 0)
+            newErrors.Categories = "Please select at least one category.";
+
+        if (selectedTags.length === 0)
+            newErrors.Tags = "Please select at least one tag.";
+
+        if (!book.Describe.trim()) newErrors.Describe = "Description is required.";
+        if (!book.image.trim()) newErrors.image = "Image URL is required.";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
+
         const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You must log in as admin!");
+            return;
+        }
+
+        const payload = {
+            ...book,
+            Categories: selectedCats.map((c) => c.value),
+            Tags: selectedTags.map((t) => t.value),
+        };
+
         const url = isEditing
             ? `http://localhost:8000/api/admin/books/${id}`
             : "http://localhost:8000/api/admin/books";
         const method = isEditing ? "PUT" : "POST";
 
-        const res = await fetch(url, {
-            method,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ ...book, categories: selectedCats }),
-        });
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
 
-        if (res.ok) {
-            navigate("/admin/books", { state: { refresh: true } });
-        } else {
-            alert("Failed to save book.");
+            const result = await res.json();
+            if (res.ok && result.status) {
+                alert(isEditing ? "Book updated successfully!" : "Book added successfully!");
+                navigate("/admin/books", { state: { refresh: true } });
+            } else {
+                alert(result.message || "Failed to save book.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error saving book.");
         }
     };
 
@@ -98,55 +153,38 @@ export default function AdminAddNewBook() {
 
             <form onSubmit={handleSubmit} className="bg-white p-4 rounded-3 shadow-sm">
                 <div className="row g-3">
-                    <div className="col-md-6">
-                        <label className="form-label fw-bold">Title</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="BookTitle"
-                            value={book.BookTitle}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label fw-bold">Author</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="Author"
-                            value={book.Author}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="col-md-6">
-                        <label className="form-label fw-bold">Publisher</label>
-                        <select
-                            name="PublisherID"
-                            className="form-select"
-                            value={book.PublisherID}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select Publisher</option>
-                            {publishers.map(p => (
-                                <option key={p.PublisherID} value={p.PublisherID}>
-                                    {p.PublisherName}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {[
+                        { label: "Title", name: "BookTitle" },
+                        { label: "Author", name: "Author" },
+                        { label: "Publisher", name: "Publisher" },
+                    ].map(({ label, name }) => (
+                        <div className="col-md-6" key={name}>
+                            <label className="form-label fw-bold">{label}</label>
+                            <input
+                                type="text"
+                                className={`form-control ${errors[name] ? "is-invalid" : ""}`}
+                                name={name}
+                                value={book[name]}
+                                onChange={handleChange}
+                            />
+                            {errors[name] && (
+                                <div className="invalid-feedback">{errors[name]}</div>
+                            )}
+                        </div>
+                    ))}
 
                     <div className="col-md-6">
                         <label className="form-label fw-bold">Year</label>
                         <input
                             type="number"
                             name="YearOfPublication"
-                            className="form-control"
+                            className={`form-control no-spin ${errors.YearOfPublication ? "is-invalid" : ""}`}
                             value={book.YearOfPublication}
                             onChange={handleChange}
                         />
+                        {errors.YearOfPublication && (
+                            <div className="invalid-feedback">{errors.YearOfPublication}</div>
+                        )}
                     </div>
 
                     <div className="col-md-6">
@@ -155,10 +193,13 @@ export default function AdminAddNewBook() {
                             type="number"
                             step="0.01"
                             name="Price"
-                            className="form-control"
+                            className={`form-control no-spin ${errors.Price ? "is-invalid" : ""}`}
                             value={book.Price}
                             onChange={handleChange}
                         />
+                        {errors.Price && (
+                            <div className="invalid-feedback">{errors.Price}</div>
+                        )}
                     </div>
 
                     <div className="col-md-6">
@@ -166,41 +207,57 @@ export default function AdminAddNewBook() {
                         <input
                             type="number"
                             name="Quantity"
-                            className="form-control"
+                            className={`form-control no-spin ${errors.Quantity ? "is-invalid" : ""}`}
                             value={book.Quantity}
                             onChange={handleChange}
                         />
+                        {errors.Quantity && (
+                            <div className="invalid-feedback">{errors.Quantity}</div>
+                        )}
                     </div>
 
-                    <div className="col-12">
+                    <div className="col-md-6">
                         <label className="form-label fw-bold">Categories</label>
-                        <div className="d-flex flex-wrap gap-3">
-                            {categories.map(c => (
-                                <div key={c.CategoryID} className="form-check">
-                                    <input
-                                        type="checkbox"
-                                        id={`cat-${c.CategoryID}`}
-                                        className="form-check-input"
-                                        checked={selectedCats.includes(c.CategoryID)}
-                                        onChange={() => handleCategoryToggle(c.CategoryID)}
-                                    />
-                                    <label className="form-check-label" htmlFor={`cat-${c.CategoryID}`}>
-                                        {c.CategoryName}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
+                        <Select
+                            isMulti
+                            options={categoryOptions}
+                            value={selectedCats}
+                            onChange={setSelectedCats}
+                            classNamePrefix="select"
+                            placeholder="Select categories..."
+                        />
+                        {errors.Categories && (
+                            <div className="text-danger small mt-1">{errors.Categories}</div>
+                        )}
+                    </div>
+
+                    <div className="col-md-6">
+                        <label className="form-label fw-bold">Tags</label>
+                        <Select
+                            isMulti
+                            options={tagOptions}
+                            value={selectedTags}
+                            onChange={setSelectedTags}
+                            classNamePrefix="select"
+                            placeholder="Select tags..."
+                        />
+                        {errors.Tags && (
+                            <div className="text-danger small mt-1">{errors.Tags}</div>
+                        )}
                     </div>
 
                     <div className="col-12">
                         <label className="form-label fw-bold">Description</label>
                         <textarea
                             name="Describe"
-                            className="form-control"
+                            className={`form-control ${errors.Describe ? "is-invalid" : ""}`}
                             rows="3"
                             value={book.Describe}
                             onChange={handleChange}
                         ></textarea>
+                        {errors.Describe && (
+                            <div className="invalid-feedback">{errors.Describe}</div>
+                        )}
                     </div>
 
                     <div className="col-12">
@@ -208,10 +265,13 @@ export default function AdminAddNewBook() {
                         <input
                             type="text"
                             name="image"
-                            className="form-control"
+                            className={`form-control ${errors.image ? "is-invalid" : ""}`}
                             value={book.image}
                             onChange={handleChange}
                         />
+                        {errors.image && (
+                            <div className="invalid-feedback">{errors.image}</div>
+                        )}
                     </div>
                 </div>
 
@@ -228,6 +288,17 @@ export default function AdminAddNewBook() {
                     </button>
                 </div>
             </form>
+
+            <style>{`
+                input.no-spin::-webkit-inner-spin-button,
+                input.no-spin::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                input.no-spin {
+                    -moz-appearance: textfield;
+                }
+            `}</style>
         </div>
     );
 }

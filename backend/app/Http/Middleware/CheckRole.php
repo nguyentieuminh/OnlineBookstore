@@ -11,11 +11,10 @@ class CheckRole
     {
         $user = $request->user();
 
-        if (!$user || !in_array($user->role, $roles)) {
+        if (!$user || !in_array($user->Role, $roles)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);
     }
 }
-

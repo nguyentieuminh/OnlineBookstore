@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { deleteBook as apiDeleteBook } from "../../api.js";
 import AdminBookCard from "../components/AdminBookCard.jsx";
 
 export default function AdminBookManagement() {
@@ -126,27 +127,21 @@ export default function AdminBookManagement() {
     }, [tagList]);
 
     const handleDelete = async (id) => {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (user.Role !== "admin") {
+            alert("Bạn không có quyền xoá sách!");
+            return;
+        }
+
+        if (!window.confirm("Are you sure you want to delete this book?")) return;
+
         try {
-            const token = localStorage.getItem("token");
-
-            const res = await fetch(`http://localhost:8000/api/admin/books/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!res.ok) {
-                const text = await res.text();
-                throw new Error(`Server returned ${res.status}: ${text}`);
-            }
-
+            await apiDeleteBook(id);
             alert("Book deleted successfully!");
-            fetchBooks();
+            setBooks((prev) => prev.filter((b) => b.id !== id));
         } catch (err) {
-            console.error("Failed to delete book:", err);
-            alert("Failed to delete book. Check console for details.");
+            console.error("Error deleting book:", err);
+            alert(err.response?.message || err.message || "Failed to delete book.");
         }
     };
 

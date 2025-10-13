@@ -7,6 +7,9 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Publisher;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
@@ -86,7 +89,7 @@ class BookController extends Controller
         }
 
         $book->load('publisher', 'categories', 'tags');
-        
+
         $book->image = $book->image ?: '/default-book.jpg';
 
         return response()->json([
@@ -148,7 +151,7 @@ class BookController extends Controller
         }
 
         $book->load('publisher', 'categories', 'tags');
-        
+
         $book->image = $book->image ?: '/default-book.jpg';
 
         return response()->json([
@@ -160,12 +163,50 @@ class BookController extends Controller
 
     public function destroy($id)
     {
-        $book = Book::find($id);
-        if (!$book) {
-            return response()->json(['status' => false, 'message' => 'Book not found'], 404);
-        }
+        try {
+            $book = Book::with(['categories', 'tags'])->find($id);
 
-        $book->delete();
-        return response()->json(['status' => true, 'message' => 'Book deleted successfully']);
+            if (!$book) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Book not found'
+                ], 404);
+            }
+
+            $book->categories()->detach();
+            $book->tags()->detach();
+
+            if (Schema::hasTable('cart_items')) {
+                $column = Schema::hasColumn('cart_items', 'BookID') ? 'BookID' : 'book_id';
+                DB::table('cart_items')->where($column, $id)->delete();
+            }
+            if (Schema::hasTable('carts')) {
+                $column = Schema::hasColumn('carts', 'BookID') ? 'BookID' : 'book_id';
+                DB::table('carts')->where($column, $id)->delete();
+            }
+
+            if (Schema::hasTable('order_items')) {
+                $column = Schema::hasColumn('order_items', 'BookID') ? 'BookID' : 'book_id';
+                DB::table('order_items')->where($column, $id)->delete();
+            }
+
+            if (Schema::hasTable('reviews')) {
+                $column = Schema::hasColumn('reviews', 'BookID') ? 'BookID' : 'book_id';
+                DB::table('reviews')->where($column, $id)->delete();
+            }
+
+            $book->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Book deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete book',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -10,10 +10,11 @@ export default function Header({ cartItems = [] }) {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
-    const userName = localStorage.getItem('userName');
-    const userRole = localStorage.getItem('role');
-    const isLoggedIn = !!userName;
-    const isAdmin = isLoggedIn && userRole === 'admin';
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('token');
+    const isLoggedIn = !!token && !!user.Name;
+    const isAdmin = isLoggedIn && user.Role === 'admin';
+    const userName = user.Name || 'Guest';
 
     useEffect(() => {
         function handleClickOutside(event) {
