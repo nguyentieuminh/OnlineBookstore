@@ -60,34 +60,34 @@ const AdminFeedback = () => {
     <div className="admin-message-container">
       <h2 className="mb-4">📩 Customer Feedback</h2>
 
-      <div className="mb-3 row g-2">
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by book title..."
-            value={searchBook}
-            onChange={(e) => setSearchBook(e.target.value)}
-          />
-        </div>
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by user name..."
-            value={searchUser}
-            onChange={(e) => setSearchUser(e.target.value)}
-          />
-        </div>
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by user email..."
-            value={searchEmail}
-            onChange={(e) => setSearchEmail(e.target.value)}
-          />
-        </div>
+      <div
+        className="d-flex align-items-center justify-content-between gap-3 mb-4"
+        style={{ flexWrap: "nowrap" }}
+      >
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by book title..."
+          value={searchBook}
+          onChange={(e) => setSearchBook(e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by user name..."
+          value={searchUser}
+          onChange={(e) => setSearchUser(e.target.value)}
+          style={{ flex: 1 }}
+        />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by user email..."
+          value={searchEmail}
+          onChange={(e) => setSearchEmail(e.target.value)}
+          style={{ flex: 1 }}
+        />
       </div>
 
       {filteredFeedbacks.length > 0 ? (

@@ -163,48 +163,47 @@ export default function AdminBookManagement() {
                 </button>
             </div>
 
-            <div className="row mb-5">
-                <div className="col-md-3 mb-2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by title..."
-                        value={searchTitle}
-                        onChange={(e) => setSearchTitle(e.target.value)}
-                    />
-                </div>
-                <div className="col-md-3 mb-2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by author..."
-                        value={searchAuthor}
-                        onChange={(e) => setSearchAuthor(e.target.value)}
-                    />
-                </div>
-                <div className="col-md-3 mb-2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by publisher..."
-                        value={searchPublisher}
-                        onChange={(e) => setSearchPublisher(e.target.value)}
-                    />
-                </div>
-                <div className="col-md-3 mb-2">
-                    <select
-                        className="form-select"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                    >
-                        <option value="">All Categories</option>
-                        {categoryList.map((cat) => (
-                            <option key={cat} value={cat}>
-                                {cat}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+            <div
+                className="d-flex align-items-center justify-content-between gap-3 mb-5"
+                style={{ flexWrap: "nowrap" }}
+            >
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by title..."
+                    value={searchTitle}
+                    onChange={(e) => setSearchTitle(e.target.value)}
+                    style={{ flex: 1 }}
+                />
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by author..."
+                    value={searchAuthor}
+                    onChange={(e) => setSearchAuthor(e.target.value)}
+                    style={{ flex: 1 }}
+                />
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by publisher..."
+                    value={searchPublisher}
+                    onChange={(e) => setSearchPublisher(e.target.value)}
+                    style={{ flex: 1 }}
+                />
+                <select
+                    className="form-select"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    style={{ flex: 1 }}
+                >
+                    <option value="">All Categories</option>
+                    {categoryList.map((cat) => (
+                        <option key={cat} value={cat}>
+                            {cat}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {tagList.length === 0 && (
