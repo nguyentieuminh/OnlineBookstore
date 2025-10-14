@@ -166,6 +166,7 @@ export default function AdminAddNewBook() {
                                 name={name}
                                 value={book[name]}
                                 onChange={handleChange}
+                                style={{ width: '450px' }}
                             />
                             {errors[name] && (
                                 <div className="invalid-feedback">{errors[name]}</div>
@@ -181,6 +182,7 @@ export default function AdminAddNewBook() {
                             className={`form-control no-spin ${errors.YearOfPublication ? "is-invalid" : ""}`}
                             value={book.YearOfPublication}
                             onChange={handleChange}
+                            style={{ width: '450px' }}
                         />
                         {errors.YearOfPublication && (
                             <div className="invalid-feedback">{errors.YearOfPublication}</div>
@@ -196,6 +198,7 @@ export default function AdminAddNewBook() {
                             className={`form-control no-spin ${errors.Price ? "is-invalid" : ""}`}
                             value={book.Price}
                             onChange={handleChange}
+                            style={{ width: '450px' }}
                         />
                         {errors.Price && (
                             <div className="invalid-feedback">{errors.Price}</div>
@@ -210,6 +213,7 @@ export default function AdminAddNewBook() {
                             className={`form-control no-spin ${errors.Quantity ? "is-invalid" : ""}`}
                             value={book.Quantity}
                             onChange={handleChange}
+                            style={{ width: '450px' }}
                         />
                         {errors.Quantity && (
                             <div className="invalid-feedback">{errors.Quantity}</div>
@@ -238,6 +242,7 @@ export default function AdminAddNewBook() {
                             options={tagOptions}
                             value={selectedTags}
                             onChange={setSelectedTags}
+                            style={{ width: '450px' }}
                             classNamePrefix="select"
                             placeholder="Select tags..."
                         />
@@ -254,6 +259,7 @@ export default function AdminAddNewBook() {
                             rows="3"
                             value={book.Describe}
                             onChange={handleChange}
+                            style={{ width: '100%' }}
                         ></textarea>
                         {errors.Describe && (
                             <div className="invalid-feedback">{errors.Describe}</div>
@@ -268,6 +274,7 @@ export default function AdminAddNewBook() {
                             className={`form-control ${errors.image ? "is-invalid" : ""}`}
                             value={book.image}
                             onChange={handleChange}
+                            style={{ width: '100%' }}
                         />
                         {errors.image && (
                             <div className="invalid-feedback">{errors.image}</div>
